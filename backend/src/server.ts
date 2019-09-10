@@ -6,8 +6,9 @@ const router = new Router()
 
 
 router.get('/*', async (ctx: Koa.Context) => {
-  ctx.body = "Hello World!"
+    ctx.body = "Hello World!"
 })
+
 
 app.use(router.routes())
 
