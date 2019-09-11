@@ -23,3 +23,20 @@ export function readLines(path: string) {
     rl.on('close', () => resolve(lines))
   })
 }
+
+
+
+/*
+  * read ts file
+*/
+export function readFile(tsFile: string): string {
+  console.log("readFile: " + tsFile)
+  tsFile = absolutePath(tsFile)
+
+  if (!fs.existsSync(tsFile)) {
+    throw new Error('File not found!: ' + tsFile)
+  }
+
+  const content = fs.readFileSync(tsFile, { encoding: 'utf8' })
+  return content
+}

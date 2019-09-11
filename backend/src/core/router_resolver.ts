@@ -1,12 +1,16 @@
-
+import * as Koa from 'koa'
 import * as KoaRouter from 'koa-router'
-import * as fs from 'fs'
+import * as parser from '@babel/parser'
 
-import { absolutePath, readLines } from '../utils/fs_utils'
+import { absolutePath, readLines, readFile } from '../utils/fs_utils'
 
 
-export interface BaseRouter {
+interface RouterPrefix {
   prefix: string
+}
+
+export interface BaseRouter extends RouterPrefix {
+  [key: string]: any
 }
 
 interface RouteMeta {
@@ -21,30 +25,127 @@ interface Router<T extends BaseRouter> {
   routers: Array<RouteMeta>
 }
 
+interface Method {
+  method: string,
+  decorators: Array<{ callee: string, args: string[] }>
+}
 
-function resolveRoutes(tsFile: string): Array<Router<BaseRouter>> {
-  let result: Array<Router<BaseRouter>> = []
+type Methods = Array<Method>
+
+
+async function resolveRoutes(tsFile: string): Promise<KoaRouter> {
 
   let code = simplifyCode(readFile(tsFile))
 
   console.log(code)
 
-  return result
+
+  // resolve methods
+  let methods: Methods = resolveMethods(code)
+
+  let clazz: any = await import(tsFile)
+  console.log("clazz: ", clazz)
+  let instance: BaseRouter = new clazz.default()
+
+  let router: KoaRouter = new KoaRouter()
+
+  let prefix: string = instance.prefix || ''
+  router = router.prefix(prefix)
+
+  methods.forEach((method: Method) => {
+    let httpMethod: string = method.decorators[0].callee.toLowerCase()
+    let args: string[] = method.decorators[0].args
+    console.log("args: ", args)
+    // let params: string[] = parseParams(args[0])
+    let methodName: string = method.method
+
+    let path: string = normalizePath(prefix + args[0])
+    console.log("path: ", path, " ;httpMethod: ", httpMethod)
+    switch (httpMethod) {
+      case 'get':
+        router.get(path, function (ctx: Koa.Context) {
+          console.log("enter... ", path)
+          instance[methodName].bind(instance)(ctx)
+        })
+    }
+
+  })
+
+  return router
+}
+
+function normalizePath(path: string): string {
+  if (path.indexOf('\/\/') === -1) {
+    return path
+  }
+
+  return normalizePath(path.replace('\/\/', '\/'))
 }
 
 
-/*
-  * read ts file
-*/
-function readFile(tsFile: string): string {
-  tsFile = absolutePath(tsFile)
-
-  if (!fs.existsSync(tsFile)) {
-    throw new Error('File not found!: ' + tsFile)
+// 解析请求path中的param
+function parseParams(path: string): string[] {
+  let params: string[] = []
+  if (!path) {
+    return []
   }
 
-  const content = fs.readFileSync(tsFile, { encoding: 'utf8' })
-  return content
+  let seperator: string = '/:'
+  let _paramPos: number = 0
+  let positions: number[] = []
+  while ((_paramPos = path.indexOf(seperator, _paramPos)) > -1) {
+    positions.push(_paramPos)
+    _paramPos += seperator.length
+  }
+
+  positions.forEach((pos, index) => {
+    let begin: number = pos + seperator.length
+    if (index === positions.length - 1) {
+      params.push(path.slice(begin))
+    } else {
+      let len: number = positions[index + 1] - pos + 1 - seperator.length
+      params.push(path.substr(pos + 2, len))
+    }
+  })
+
+  return params
+}
+
+
+
+function resolveMethods(simplifiedCode: string): Methods { // 
+
+  let ast = parser.parse(simplifiedCode, {
+    // parse in strict mode and allow module declarations
+    sourceType: 'module',
+    plugins: [
+      'typescript',
+      'classProperties',
+      'classPrivateProperties',
+      'classPrivateMethods',
+      ['decorators', { decoratorsBeforeExport: true }]
+    ],
+
+  })
+
+  let classBody = ast.program.body.filter((node: any) => node.type === 'ClassDeclaration')[0].body.body
+  //   console.log("resolveMethods classBody: ", classBody)
+
+  let _methods = classBody.filter((node: any) => node.type === 'ClassMethod' && node.accessibility === 'public')
+
+  let _methodsWithDecorators = _methods.filter((methodNode: any) => true === !!methodNode.decorators)
+  console.log(_methodsWithDecorators)
+
+  let methods: Methods = _methodsWithDecorators.map((methodNode: any) => {
+    let methodName: string = methodNode.key.name
+    let decorators: Array<{ callee: string, args: string[] }> = methodNode.decorators.map((decoratorNode: any) => {
+      return { callee: decoratorNode.expression.callee.name, args: decoratorNode.expression.arguments.map((node: any) => node.value) }
+    })
+
+    return { method: methodName, decorators: decorators }
+  })
+
+  return methods
 }
 
 
@@ -62,7 +163,7 @@ function simplifyCode(code: string): string {
 
 function isSingleLineCommentOrBlankLine(line: string): boolean {
   let trimedLine = line.trim()
-  return !trimedLine || trimedLine.startsWith('\\\\')
+  return !trimedLine || trimedLine.startsWith('\/\/')
 }
 
 
@@ -77,7 +178,7 @@ function removeSingleLineComments(code: string): string {
 
     step++
   }
-  return lines.filter(line => line !== '').join('')
+  return lines.filter(line => line !== '').join('\n')
 }
 
 
@@ -101,6 +202,12 @@ function removeMultiLineComments(code: string): string {
   return removeMultiLineComments(code)
 }
 
+// Just a mark
+function GET(path: string) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    // pass
+  }
+}
 
 
-resolveRoutes('../controller/index/index.ts')
+export { resolveRoutes, simplifyCode, resolveMethods, GET }
