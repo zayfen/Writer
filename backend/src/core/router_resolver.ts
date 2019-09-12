@@ -13,7 +13,8 @@ import { middlewaresFromDecorators, resolveMixMiddlewares } from './middleware_r
 
 async function resolveRoutes(tsFile: string): Promise<KoaRouter> {
 
-  let code = simplifyCode(readFile(tsFile))
+  // let code = simplifyCode(readFile(tsFile))
+  let code = readFile(tsFile)
   //  console.log(code)
 
   let ast = parser.parse(code, {
@@ -92,7 +93,6 @@ async function routerFromMethods(instance: BaseRouter, methods: MethodsMetas): P
       let httpMethod: string = callee
       let path: string = normalizePath(prefix + args[0])
       console.log("HttpMethod: ", httpMethod, " ;Path: ", path)
-      // append http method handler
 
       if (index == 0) { // 防止多次添加method
         middlewares.push(instance[methodName].bind(instance))

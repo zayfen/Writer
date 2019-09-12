@@ -11,19 +11,18 @@ export function middlewareFilePath(middleware: string): string {
 
 export async function middlewaresFromDecorators(decorators: Decorators): Promise<Array<MiddleWare>> {
   let middlewares: Array<MiddleWare> = []
-  console.log("middlewaresFromDecorators decorators: ", decorators)
+
   for (let i = 0; i < decorators.length; i++) {
     let decorator = decorators[i]
     if (decorator.callee === 'MIDDLEWARE') {
       middlewares.push(await findMiddleware(decorator.args[0]))
     }
   }
-  console.log("middlewaresFromDecorators: middlewares: ", middlewares)
+
   return middlewares
 }
 
 export async function resolveMixMiddlewares(middlewares: Array<MiddleWare | string>): Promise<MiddleWare[]> {
-  console.log("resolveMixMiddlewares: ", middlewares)
   let ret: MiddleWare[] = []
   for (let i = 0; i < middlewares.length; i++) {
     let item = middlewares[i]
@@ -33,16 +32,13 @@ export async function resolveMixMiddlewares(middlewares: Array<MiddleWare | stri
     }
     ret.push(item)
   }
-  console.log("resolveMixMiddlewares: ret ", ret)
   return ret
 }
 
 export function findMiddleware(middleware: string): Promise<MiddleWare> {
   return new Promise<MiddleWare>((resolve, reject) => {
-    console.log("findMiddleware: ", middleware)
     let mwPath: string = middlewareFilePath(middleware)
     import(mwPath).then(obj => {
-      console.log("Import MiddlewareFunction: ", obj)
       resolve(obj.default)
     })
   })

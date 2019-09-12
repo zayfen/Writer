@@ -40,3 +40,41 @@ export function readFile(tsFile: string): string {
   const content = fs.readFileSync(tsFile, { encoding: 'utf8' })
   return content
 }
+
+export function isDirectory(path: string): boolean {
+  if (!fs.existsSync(path)) {
+    throw new Error(__filename + " isDirectory: path not existed: " + path)
+  }
+  let stat = fs.statSync(path)
+  return stat.isDirectory()
+}
+
+/*
+  list fiels of directory
+*/
+export function listDirectoryFiles(dir: string, level: number = -1): Array<string> {
+  if (!fs.existsSync(dir)) {
+    throw new Error(__filename + " listDirectoryFiles: Directory not existed: " + dir)
+  }
+
+  // 限制查询的层级
+  if (level > -1 && level === 0) {
+    return isDirectory(dir) ? [] : [dir]
+  }
+
+  if (!isDirectory(dir)) {
+    return [dir]
+  }
+
+  let paths: string[] = fs.readdirSync(dir).map(f => [dir, f].join('/'))
+  let files: string[] = []
+  for (let i = 0; i < paths.length; i++) {
+    if (isDirectory(paths[i])) {
+      files = files.concat(listDirectoryFiles(paths[i], level - 1))
+      continue
+    }
+    files.push(paths[i])
+  }
+
+  return files
+}
