@@ -1,86 +1,134 @@
-import * as Koa from 'koa'
 import * as KoaRouter from 'koa-router'
 import * as parser from '@babel/parser'
+import { ClassDeclaration, Statement, ClassMethod, Decorator as BabelDecorator } from '@babel/types'
 
-import { absolutePath, readLines, readFile } from '../utils/fs_utils'
+import { readFile } from '../utils/fs_utils'
+import { normalizePath } from '../utils/uri_utils'
+import { MethodMeta, MethodsMetas, BaseRouter, Decorators, MiddleWare } from './types'
 
+import { simplifyCode } from './simplify_code'
 
-interface RouterPrefix {
-  prefix: string
-}
-
-export interface BaseRouter extends RouterPrefix {
-  [key: string]: any
-}
-
-interface RouteMeta {
-  path: string,
-  params: Array<string>
-}
-
-interface Router<T extends BaseRouter> {
-  filePath: string,
-  prefix: string,
-  instance: T,
-  routers: Array<RouteMeta>
-}
-
-interface Method {
-  method: string,
-  decorators: Array<{ callee: string, args: string[] }>
-}
-
-type Methods = Array<Method>
+import { middlewaresFromDecorators, resolveMixMiddlewares } from './middleware_resolver'
 
 
 async function resolveRoutes(tsFile: string): Promise<KoaRouter> {
 
   let code = simplifyCode(readFile(tsFile))
+  //  console.log(code)
 
-  console.log(code)
+  let ast = parser.parse(code, {
+    // parse in strict mode and allow module declarations
+    sourceType: 'module',
+    plugins: [
+      'typescript',
+      'classProperties',
+      'classPrivateProperties',
+      'classPrivateMethods',
+      ['decorators', { decoratorsBeforeExport: true }]
+    ],
+  })
 
+  // only handle first class
+  let classDeclarationNode: Statement = ast.program.body.filter((node: ClassDeclaration) => node.type === 'ClassDeclaration')[0]
+  if (classDeclarationNode.type !== 'ClassDeclaration') {
+    return null
+  }
+
+  let classBody = classDeclarationNode.body.body
+
+  let publicMethodsNodes: Array<ClassMethod> = []
+  classBody.forEach(node => {
+    if (node.type === 'ClassMethod' && node.accessibility === 'public') {
+      publicMethodsNodes.push(node)
+    }
+  })
 
   // resolve methods
-  let methods: Methods = resolveMethods(code)
+  let methods: MethodsMetas = resolveMethods(publicMethodsNodes)
 
   let clazz: any = await import(tsFile)
   console.log("clazz: ", clazz)
   let instance: BaseRouter = new clazz.default()
 
-  let router: KoaRouter = new KoaRouter()
-
-  let prefix: string = instance.prefix || ''
-  router = router.prefix(prefix)
-
-  methods.forEach((method: Method) => {
-    let httpMethod: string = method.decorators[0].callee.toLowerCase()
-    let args: string[] = method.decorators[0].args
-    console.log("args: ", args)
-    // let params: string[] = parseParams(args[0])
-    let methodName: string = method.method
-
-    let path: string = normalizePath(prefix + args[0])
-    console.log("path: ", path, " ;httpMethod: ", httpMethod)
-    switch (httpMethod) {
-      case 'get':
-        router.get(path, function (ctx: Koa.Context) {
-          console.log("enter... ", path)
-          instance[methodName].bind(instance)(ctx)
-        })
-    }
-
-  })
+  let router: KoaRouter = await routerFromMethods(instance, methods)
 
   return router
 }
 
-function normalizePath(path: string): string {
-  if (path.indexOf('\/\/') === -1) {
-    return path
-  }
 
-  return normalizePath(path.replace('\/\/', '\/'))
+// decoratorsNodes(babel generatored) => decorators
+function decoratorsFromDecoratorsNodes(decoratorsNodes: Array<BabelDecorator>): Decorators {
+  let decorators: Decorators = decoratorsNodes.map((decoratorNode: any) => {
+    return { callee: decoratorNode.expression.callee.name, args: decoratorNode.expression.arguments.map((node: any) => node.value) }
+  })
+  return decorators
 }
+
+// 将methods转成router
+async function routerFromMethods(instance: BaseRouter, methods: MethodsMetas): Promise<KoaRouter> {
+  let prefix: string = instance.prefix || ''
+  let router = new KoaRouter()
+
+  router = router.prefix(prefix)
+  const allMethods: string[] = ['GET', 'POST', 'PUT', 'DEL', 'DELETE', 'HEAD', 'OPTION', 'PATCH', 'ALL']
+
+  // methods.forEach(async (method: MethodMeta) => {
+  for (let i = 0; i < methods.length; i++) {
+    let method = methods[i]
+    console.log(" ===================================================== ")
+    let methodName: string = method.method
+
+    let middlewares: Array<MiddleWare> = await resolveMixMiddlewares(instance.classMiddlewares())
+    console.log("Class Middlewares: ", middlewares)
+
+    let middlewareDecorators = method.decorators.filter(decorator => allMethods.indexOf(decorator.callee) === -1)
+    let httpDecorators = method.decorators.filter(decorator => allMethods.indexOf(decorator.callee) > -1)
+    middlewares = middlewares.concat(await middlewaresFromDecorators(middlewareDecorators))
+
+    httpDecorators.forEach((decorator, index) => {
+      let callee: string = decorator.callee
+      let args: Array<string | MiddleWare> = decorator.args
+
+      let httpMethod: string = callee
+      let path: string = normalizePath(prefix + args[0])
+      console.log("HttpMethod: ", httpMethod, " ;Path: ", path)
+      // append http method handler
+
+      if (index == 0) { // 防止多次添加method
+        middlewares.push(instance[methodName].bind(instance))
+      }
+
+      console.log("Path: ", path, " ;Middlewares: ", middlewares)
+
+      switch (httpMethod) {
+        case 'GET':
+          router.get(path, ...middlewares)
+          break
+        case 'POST':
+          router.post(path, ...middlewares)
+          break
+        case 'PUT':
+          router.put(path, ...middlewares)
+          break
+        case 'DEL':
+        case 'DELETE':
+          router.del(path, ...middlewares)
+          break
+        case 'HEAD':
+          router.head(path, ...middlewares)
+          break
+        case 'ALL':
+          router.del(path, ...middlewares)
+        default:
+          console.log("This http method is ignorged: ", httpMethod)
+      }
+    })                          // end forEach
+  }
+  //  })
+
+  return router
+}
+
 
 
 // 解析请求path中的param
@@ -112,102 +160,24 @@ function parseParams(path: string): string[] {
 }
 
 
+// 解析class中的methods信息
+function resolveMethods(classMethodsNodes: Array<ClassMethod>): MethodsMetas { // 
+  let methodsWithDecorators: Array<ClassMethod> = classMethodsNodes.filter((methodNode: any) => true === !!methodNode.decorators)
+  // console.log(methodsWithDecorators)
 
-function resolveMethods(simplifiedCode: string): Methods { // 
+  return methodsMetasFromClassMethods(methodsWithDecorators)
+}
 
-  let ast = parser.parse(simplifiedCode, {
-    // parse in strict mode and allow module declarations
-    sourceType: 'module',
-    plugins: [
-      'typescript',
-      'classProperties',
-      'classPrivateProperties',
-      'classPrivateMethods',
-      ['decorators', { decoratorsBeforeExport: true }]
-    ],
-
-  })
-
-  let classBody = ast.program.body.filter((node: any) => node.type === 'ClassDeclaration')[0].body.body
-  //   console.log("resolveMethods classBody: ", classBody)
-
-  let _methods = classBody.filter((node: any) => node.type === 'ClassMethod' && node.accessibility === 'public')
-
-  let _methodsWithDecorators = _methods.filter((methodNode: any) => true === !!methodNode.decorators)
-  console.log(_methodsWithDecorators)
-
-  let methods: Methods = _methodsWithDecorators.map((methodNode: any) => {
+// class methods nodes (from babel) => MethodsMetas
+function methodsMetasFromClassMethods(methodsNodes: Array<ClassMethod>): MethodsMetas {
+  let methods: MethodsMetas = methodsNodes.map((methodNode: any) => {
     let methodName: string = methodNode.key.name
-    let decorators: Array<{ callee: string, args: string[] }> = methodNode.decorators.map((decoratorNode: any) => {
-      return { callee: decoratorNode.expression.callee.name, args: decoratorNode.expression.arguments.map((node: any) => node.value) }
-    })
 
+    let decorators: Decorators = decoratorsFromDecoratorsNodes(methodNode.decorators)
     return { method: methodName, decorators: decorators }
   })
 
   return methods
 }
 
-
-// 简化代码，去掉注释 和 空格， 和回车
-function simplifyCode(code: string): string {
-
-  // remove single line comments and blank lines
-  code = removeSingleLineComments(code)
-
-  // remove multi lines comments like /**/
-  code = removeMultiLineComments(code)
-
-  return code
-}
-
-function isSingleLineCommentOrBlankLine(line: string): boolean {
-  let trimedLine = line.trim()
-  return !trimedLine || trimedLine.startsWith('\/\/')
-}
-
-
-function removeSingleLineComments(code: string): string {
-  // find //
-  let lines = code.split('\n')
-  let step = 0
-  while (step < lines.length) {
-    if (isSingleLineCommentOrBlankLine(lines[step])) {
-      lines[step] = ''
-    }
-
-    step++
-  }
-  return lines.filter(line => line !== '').join('\n')
-}
-
-
-// remove comments link /**/
-function removeMultiLineComments(code: string): string {
-  // find /*
-
-  let commentStart = '/*'
-  let commentStartPos = code.indexOf(commentStart)
-  if (commentStartPos === -1) {
-    return code
-  }
-
-  let commentEnd = '*/'
-  let commentEndPos = code.indexOf(commentEnd, commentStartPos + 1)
-  if (commentEndPos === -1) {
-    throw new Error('broken comments')
-  }
-
-  code = [code.slice(0, commentStartPos), code.slice(commentEndPos + commentEnd.length)].join('')
-  return removeMultiLineComments(code)
-}
-
-// Just a mark
-function GET(path: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    // pass
-  }
-}
-
-
-export { resolveRoutes, simplifyCode, resolveMethods, GET }
+export { resolveRoutes, resolveMethods }
