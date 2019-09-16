@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">我的文章</router-link> |
+      <router-link to="/publish">发布新文章</router-link>
     </div>
     <router-view/>
   </div>
@@ -15,9 +15,10 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  padding: 20px;
 }
 #nav {
-  padding: 30px;
+  padding-bottom: 10px;
   a {
     font-weight: bold;
     color: #2c3e50;
