@@ -1,0 +1,21 @@
+{
+  "apps" : [{
+    "name": "zweb",
+    "script": "./src/server.ts",
+    "cwd": ".",
+    "instances" : "2",
+    "exec_mode": "cluster",
+    "watch": ["src"],
+    "error_file": "./logs/zweb-error.log",
+    "out_file": "./logs/zweb-out.log",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 3000
+    },
+    "env_production": {
+      "NODE_ENV": "production",
+      "PORT": 3000
+    }
+  }]
+}
+
