@@ -25,6 +25,10 @@ export function readLines(path: string) {
 }
 
 
+export function existed (path: string): boolean {
+  return fs.existsSync(path)
+}
+
 
 /*
   * read ts file
@@ -40,6 +44,8 @@ export function readFile(tsFile: string): string {
   const content = fs.readFileSync(tsFile, { encoding: 'utf8' })
   return content
 }
+
+
 
 export function isDirectory(path: string): boolean {
   if (!fs.existsSync(path)) {

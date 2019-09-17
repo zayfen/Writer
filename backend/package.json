@@ -9,10 +9,14 @@
     "pm2-reload": "pm2 reload zweb",
     "pm2-list": "pm2 list",
     "pm2-stop": "pm2 stop zweb",
-    "test": "ts-node tests/index.ts"
+    "test": "mocha -r ts-node/register tests/**/*.ts"
   },
   "devDependencies": {
-    "@babel/parser": "^7.5.5"
+    "@babel/parser": "^7.5.5",
+    "@types/chai": "^4.2.2",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0"
   },
   "dependencies": {
     "@babel/types": "^7.6.1",
