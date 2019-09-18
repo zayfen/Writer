@@ -1,4 +1,5 @@
-import { existed, readFile, listDirectoryFiles } from './fs_utils'
+import { existed, readFile, listDirectoryFiles, fileModifyDate } from './fs_utils'
+import { fileName } from './path_utils'
 
 interface MarkdownMeta {
   title: string,
@@ -6,6 +7,25 @@ interface MarkdownMeta {
   tags?: string[],
   categories?: string[],
   archives?: string[],
+}
+
+
+export function publishDate (mdPath: string): string {
+  return fileModifyDate(mdPath)
+}
+
+
+/**
+ * markdown markdown文件的url path
+ * @param mdPath 
+ */
+export function mdUriPath (mdPath: string): string {
+  let uriPath: string = ''
+  let fullFileName: string = fileName(mdPath)
+  let _fileName: string = fullFileName.substr(0, fullFileName.length - 3)
+
+  let pdate: string = publishDate(mdPath)
+  return ['', pdate, _fileName].join('/')
 }
 
 export function parseHexoMd (mdPath: string): MarkdownMeta {

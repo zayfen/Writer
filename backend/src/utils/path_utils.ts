@@ -8,3 +8,13 @@ export function pathRelativeRoot (_path: string): string {
   let rootPath: string = path.resolve(__dirname, '../../') 
   return path.resolve(rootPath, _path)
 }
+
+
+export function fileName (_path: string): string {
+  return path.basename(_path)
+}
+
+export function cutPath (fullPath: string, partialPath: string): string {
+  let _path = fullPath.split(partialPath).join('')
+  return _path.charAt(0) === '/' ? _path : '/' + _path
+}

@@ -1,6 +1,9 @@
 
-
-import  { ArticleDAO } from '../dao/article_dao'
+import config from '../../config'
+import  { ArticleDAO, ArticleMeta } from '../dao/article_dao'
+import { parseHexoMd, publishDate, mdUriPath } from '../utils/md_utils'
+import { listDirectoryFiles } from '../utils/fs_utils'
+import { cutPath } from '../utils/path_utils'
 
 
 /**
@@ -14,7 +17,11 @@ class ArticlService {
     }
   }
 
-  
+  public getArticlesByUser (author: string): Promise<ArticleMeta[]> {
+    return new Promise((resolve, reject) => {
+      this.db.findArticleByAuthor(author).then(articles => resolve(articles))
+    })
+  }
 
 }
 
