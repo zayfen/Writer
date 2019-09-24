@@ -18,7 +18,7 @@ class Index implements BaseRouter {
   public async getArticleList (ctx: Koa.Context) {
     let user: string = ctx.session.user
     let articles = await this.articleService.getArticlesByUser(user)
-    ctx.body = articles
+    ctx.body = { code: 0, message: 'success', data: { list: articles } }
   }
 }
 

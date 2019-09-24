@@ -22,9 +22,10 @@ class Account implements BaseRouter {
     const account: { [key: string]: string } = typeof AccountData === 'string' ? JSON.parse(AccountData) : AccountData
     console.log("account: ", account)
     
+    // ctx.set('Access-Control-Allow-Origin', '*')
+    
     if (!account[userName] || account[userName] !== passwd) {
       console.log("账号或者密码不对")
-      // ctx.body = { code: -1, message: '账号或者密码不对' }
       ctx.type = 'json'
       ctx.body = { code: -1, message: '账号或者密码不对' }
     } else {
@@ -35,6 +36,19 @@ class Account implements BaseRouter {
       ctx.body = JSON.stringify({ code: 0, message: 'success' })      
     }
   }
+
+
+  @POST('/alreadyLogin')
+  public alreadyLogin (ctx: Koa.Context) {
+    let alreadyLogin: true = (ctx.session && ctx.session.user)
+    if (alreadyLogin) {
+      console.log("/api/account/alreadyLogin: ", alreadyLogin)
+      ctx.body = { code: 0, message: '已经登录' }
+    } else {
+      ctx.body = { code: -1, message: '未登录或登录已失效' }
+    }
+  }
+
 
   @POST('/logout')
   public logout (ctx: Koa.Context) {
