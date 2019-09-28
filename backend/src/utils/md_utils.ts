@@ -1,5 +1,7 @@
-import { existed, readFile, listDirectoryFiles, fileModifyDate } from './fs_utils'
+import { existed, readFile, formatDate, fileModifyDate, writeFile } from './fs_utils'
 import { fileName } from './path_utils'
+import { ArticleMeta } from '../dao/article_dao'
+import { taggedTemplateExpression } from '@babel/types'
 
 interface MarkdownMeta {
   title: string,
@@ -10,7 +12,7 @@ interface MarkdownMeta {
 }
 
 
-export function publishDate (mdPath: string): string {
+export function publishDate(mdPath: string): string {
   return fileModifyDate(mdPath)
 }
 
@@ -19,7 +21,7 @@ export function publishDate (mdPath: string): string {
  * markdown markdown文件的url path
  * @param mdPath 
  */
-export function mdUriPath (mdPath: string): string {
+export function mdUriPath(mdPath: string): string {
   let uriPath: string = ''
   let fullFileName: string = fileName(mdPath)
   let _fileName: string = fullFileName.substr(0, fullFileName.length - 3)
@@ -28,7 +30,7 @@ export function mdUriPath (mdPath: string): string {
   return ['', pdate, _fileName].join('/')
 }
 
-export function parseHexoMd (mdPath: string): MarkdownMeta {
+export function parseHexoMd(mdPath: string): MarkdownMeta {
   let info: MarkdownMeta = null
   if (!existed(mdPath)) {
     return info
@@ -91,7 +93,7 @@ export function parseHexoMd (mdPath: string): MarkdownMeta {
        */
       let key: string = phases[0].trim()
       let value: string = phases.slice(1).join(':').trim()
-      if (key === 'title' || key === 'author') { 
+      if (key === 'title' || key === 'author') {
         info[key] = value
       }
     }
@@ -99,4 +101,35 @@ export function parseHexoMd (mdPath: string): MarkdownMeta {
   }
 
   return info
+}
+
+
+export async function writeMdFile(path: string, article: ArticleMeta, content: string) {
+  let articleContent: string[] = []
+  articleContent.push('------')
+
+  // push title
+  articleContent.push('title: ' + article.title)
+  // push author
+  articleContent.push('author: ' + article.author)
+
+  // push date
+  articleContent.push('date: ', article.publishDate || formatDate(new Date(), ':'))
+
+  // push tags
+  articleContent.push('tags: ')
+  article.tags.forEach(tag => articleContent.push(' - ' + tag))
+
+  // push archives
+  articleContent.push('archives: ')
+  article.archives.forEach(archive => articleContent.push(' - ' + archive))
+
+  // push categories
+  articleContent.push('categories: ')
+  article.categories.forEach(category => articleContent.push(' - ' + category))
+
+  // push content
+  articleContent.push(content)
+
+  writeFile(path, articleContent.join('\n'))
 }

@@ -1,6 +1,6 @@
 
 import config from '../../config'
-import  { ArticleDAO, ArticleMeta } from '../dao/article_dao'
+import { ArticleDAO, ArticleMeta } from '../dao/article_dao'
 import { parseHexoMd, publishDate, mdUriPath } from '../utils/md_utils'
 import { listDirectoryFiles } from '../utils/fs_utils'
 import { cutPath } from '../utils/path_utils'
@@ -12,19 +12,19 @@ import * as path from 'path'
  */
 class InitService {
   private db: ArticleDAO = null
-  constructor () {
+  constructor() {
     if (this.db === null) {
       this.db = new ArticleDAO()
     }
   }
 
-  public init () {
+  public init() {
     this.initArticlesDb()
   }
 
   /* 初始化articles database */
-  public initArticlesDb () {
-    let files: string[] = listDirectoryFiles(path.resolve(config.hexoRoot, './source/_posts'))
+  public initArticlesDb() {
+    let files: string[] = listDirectoryFiles(path.resolve(config.hexoRoot, config.postsPath))
     files.forEach((md: string, index: number) => {
       let mdInfo = parseHexoMd(md)
       let article: ArticleMeta = {
@@ -38,9 +38,9 @@ class InitService {
         url: mdUriPath(md)
       }
 
-      this.db.insertArticle(article).then( value => {
+      this.db.insertArticle(article).then(value => {
         console.log("InserArticle Success: ", value)
-      }).catch( err => {
+      }).catch(err => {
         console.log("InsertArticle Error: ", err)
       })
 
@@ -48,7 +48,7 @@ class InitService {
   }
 
   /* @Deprecated: initAccountDb() */
-  public initAccountDb () {
+  public initAccountDb() {
 
   }
 

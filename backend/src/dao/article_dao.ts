@@ -8,22 +8,22 @@ export interface ArticleMeta {
   tags?: string[],
   categories?: string[],
   archives?: string[],
-  url: string,
-  path: string // 文件存储路径
+  url?: string,
+  path?: string, // 文件存储路径
 }
 
 const db = new Nedb<ArticleMeta>({ filename: pathRelativeRoot('data/articles.db'), autoload: true })
 
 export class ArticleDAO {
   private db: Nedb<ArticleMeta> = null
-  constructor () {
+  constructor() {
     if (this.db === null) {
       this.db = db
     }
   }
 
 
-  public insertArticle (article: ArticleMeta): Promise<ArticleMeta> {
+  public insertArticle(article: ArticleMeta): Promise<ArticleMeta> {
     return new Promise((resolve, reject) => {
       this.db.insert(article, function (err, newDocs) {
         if (err) {
@@ -31,13 +31,13 @@ export class ArticleDAO {
         } else {
           resolve(newDocs)
         }
-      })   
+      })
     })
 
   }
 
 
-  public findArticleByAuthor (author: string): Promise<Array<ArticleMeta>> {
+  public findArticleByAuthor(author: string): Promise<Array<ArticleMeta>> {
     return new Promise((resolve, reject) => {
       this.db.find({ author: author }, (err: Error, docs: Array<ArticleMeta>) => {
         if (err) {
@@ -50,7 +50,7 @@ export class ArticleDAO {
   }
 
 
-  public findArticleById (id: string): Promise<ArticleMeta> {
+  public findArticleById(id: string): Promise<ArticleMeta> {
     return new Promise((resolve, reject) => {
       this.db.findOne({ _id: id }, (err: Error, doc: ArticleMeta) => {
         if (err) {
@@ -63,9 +63,9 @@ export class ArticleDAO {
   }
 
 
-  public updateArticle (id: string, article: ArticleMeta): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
+  public updateArticle(id: string, article: ArticleMeta): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
     return new Promise((resolve, reject) => {
-      this.db.update({_id: id}, article, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
+      this.db.update({ _id: id }, article, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
         if (err) {
           reject(err)
         } else {
@@ -76,7 +76,7 @@ export class ArticleDAO {
   }
 
 
-  public deleteArticle (id: string): Promise<Number> {
+  public deleteArticle(id: string): Promise<Number> {
     return new Promise((resolve, reject) => {
       this.db.remove({ _id: id }, {}, (err: Error, numRemoved: Number) => {
         if (err) {

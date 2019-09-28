@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import * as readline from 'readline'
 import { pathToFileURL } from 'url'
+import { resolve } from 'dns'
+import { rejects } from 'assert'
 
 // transform path to absolutepath
 export function absolutePath(path: string): string {
@@ -25,7 +27,7 @@ export function readLines(path: string) {
 }
 
 
-export function existed (path: string): boolean {
+export function existed(path: string): boolean {
   return fs.existsSync(path)
 }
 
@@ -45,6 +47,10 @@ export function readFile(tsFile: string): string {
   return content
 }
 
+
+export function writeFile(filePath: string, content: string) {
+  return fs.writeFileSync(filePath, content, { flag: 'a' }) // encoding default utf-8
+}
 
 
 export function isDirectory(path: string): boolean {
@@ -85,22 +91,38 @@ export function listDirectoryFiles(dir: string, level: number = -1): Array<strin
   return files
 }
 
-function formatDate(d: Date) {
+export function formatDate(d: Date, separator: string = '/') {
   let month = '' + (d.getMonth() + 1)
   let day = '' + d.getDate()
   let year = d.getFullYear()
 
-  if (month.length < 2) 
-      month = '0' + month
-  if (day.length < 2) 
-      day = '0' + day
+  if (month.length < 2)
+    month = '0' + month
+  if (day.length < 2)
+    day = '0' + day
 
-  return [year, month, day].join('/')
+  return [year, month, day].join(separator)
 }
 
-export function fileModifyDate (path: string): string {
+// 文件修改的时间
+export function fileModifyDate(path: string): string {
   let date: string = ''
   let stat = fs.statSync(path)
   date = formatDate(stat.mtime)
   return date
+}
+
+
+// 删除文件
+export function deleteFile(path: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    fs.unlink(path, (err: NodeJS.ErrnoException) => {
+      if (!err) {
+        resolve("success")
+      } else {
+        console.error("deleteFile(", path, ") ERROR; ", err)
+        reject("error")
+      }
+    })
+  })
 }
