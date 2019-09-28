@@ -19,6 +19,11 @@ class InitService {
   }
 
   public init () {
+    this.initArticlesDb()
+  }
+
+  /* 初始化articles database */
+  public initArticlesDb () {
     let files: string[] = listDirectoryFiles(path.resolve(config.hexoRoot, './source/_posts'))
     files.forEach((md: string, index: number) => {
       let mdInfo = parseHexoMd(md)
@@ -40,6 +45,11 @@ class InitService {
       })
 
     })
+  }
+
+  /* @Deprecated: initAccountDb() */
+  public initAccountDb () {
+
   }
 
 }
