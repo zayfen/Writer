@@ -176,7 +176,6 @@ export default class Publish extends Vue {
     this.categoryInputVisible = true
     this.$nextTick(() => {
         this.$refs.refCategoryInput.$refs.input.focus()
-      }
     })
   }
 
