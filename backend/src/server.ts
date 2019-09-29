@@ -13,14 +13,14 @@ app.use(async (ctx, next) => {
   console.log("request: ", ctx.originalUrl)
   // console.log("router.stack", router.stack)
   try {
-    await next()  
+    await next()
   } catch (error) {
     ctx.app.emit('error', error, ctx)
   }
 })
 
 const CONFIG = {
-  key: 'sid', 
+  key: 'sid',
   maxAge: 86400000,
   autoCommit: true, /** (boolean) automatically commit headers (default true) */
   overwrite: true, /** (boolean) can overwrite or not (default true) */

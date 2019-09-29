@@ -12,7 +12,7 @@ interface MarkdownMeta {
 }
 
 
-export function publishDate(mdPath: string): string {
+export function publishDate (mdPath: string): string {
   return fileModifyDate(mdPath)
 }
 
@@ -21,7 +21,7 @@ export function publishDate(mdPath: string): string {
  * markdown markdown文件的url path
  * @param mdPath 
  */
-export function mdUriPath(mdPath: string): string {
+export function mdUriPath (mdPath: string): string {
   let uriPath: string = ''
   let fullFileName: string = fileName(mdPath)
   let _fileName: string = fullFileName.substr(0, fullFileName.length - 3)
@@ -30,7 +30,7 @@ export function mdUriPath(mdPath: string): string {
   return ['', pdate, _fileName].join('/')
 }
 
-export function parseHexoMd(mdPath: string): MarkdownMeta {
+export function parseHexoMd (mdPath: string): MarkdownMeta {
   let info: MarkdownMeta = null
   if (!existed(mdPath)) {
     return info
@@ -104,7 +104,7 @@ export function parseHexoMd(mdPath: string): MarkdownMeta {
 }
 
 
-export async function writeMdFile(path: string, article: ArticleMeta, content: string) {
+export async function writeMdFile (path: string, article: ArticleMeta, content: string) {
   let articleContent: string[] = []
   articleContent.push('------')
 

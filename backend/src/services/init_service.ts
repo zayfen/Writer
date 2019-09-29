@@ -2,8 +2,8 @@
 import config from '../../config'
 import { ArticleDAO, ArticleMeta } from '../dao/article_dao'
 import { parseHexoMd, publishDate, mdUriPath } from '../utils/md_utils'
-import { listDirectoryFiles } from '../utils/fs_utils'
-import { cutPath } from '../utils/path_utils'
+import { listDirectoryFiles, existed } from '../utils/fs_utils'
+import { cutPath, pathRelativeRoot } from '../utils/path_utils'
 import * as path from 'path'
 
 
@@ -18,12 +18,23 @@ class InitService {
     }
   }
 
-  public init() {
-    this.initArticlesDb()
+  public async init () {
+    if (existed(pathRelativeRoot('data/articles.db'))) {
+      return 'success'
+    }
+
+    try {
+      let result = await this.initArticlesDb()
+      console.log('initArticlesDb Success: ', result)
+      return 'success'
+    } catch (error) {
+      console.error("initArticlesDb Error: ", error)
+      return 'failed'
+    }
   }
 
   /* 初始化articles database */
-  public initArticlesDb() {
+  public initArticlesDb () {
     let files: string[] = listDirectoryFiles(path.resolve(config.hexoRoot, config.postsPath))
     files.forEach((md: string, index: number) => {
       let mdInfo = parseHexoMd(md)
@@ -38,17 +49,13 @@ class InitService {
         url: mdUriPath(md)
       }
 
-      this.db.insertArticle(article).then(value => {
-        console.log("InserArticle Success: ", value)
-      }).catch(err => {
-        console.log("InsertArticle Error: ", err)
-      })
+      return this.db.insertArticle(article)
 
     })
   }
 
   /* @Deprecated: initAccountDb() */
-  public initAccountDb() {
+  public initAccountDb () {
 
   }
 

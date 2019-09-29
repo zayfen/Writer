@@ -14,7 +14,7 @@ import { middlewaresFromDecorators, resolveMixMiddlewares } from './middleware_r
 
 // global varable to hold current controller file
 
-async function resolveRoutes(tsFile: string): Promise<KoaRouter> {
+async function resolveRoutes (tsFile: string): Promise<KoaRouter> {
 
   // let code = simplifyCode(readFile(tsFile))
   let code = readFile(tsFile)
@@ -61,7 +61,7 @@ async function resolveRoutes(tsFile: string): Promise<KoaRouter> {
 
 
 // decoratorsNodes(babel generatored) => decorators
-function decoratorsFromDecoratorsNodes(decoratorsNodes: Array<BabelDecorator>): Decorators {
+function decoratorsFromDecoratorsNodes (decoratorsNodes: Array<BabelDecorator>): Decorators {
   let decorators: Decorators = decoratorsNodes.map((decoratorNode: any) => {
     return { callee: decoratorNode.expression.callee.name, args: decoratorNode.expression.arguments.map((node: any) => node.value) }
   })
@@ -69,7 +69,7 @@ function decoratorsFromDecoratorsNodes(decoratorsNodes: Array<BabelDecorator>): 
 }
 
 // 将methods转成router
-async function routerFromMethods(instance: BaseRouter, methods: MethodsMetas, localMiddrewareDir: string): Promise<KoaRouter> {
+async function routerFromMethods (instance: BaseRouter, methods: MethodsMetas, localMiddrewareDir: string): Promise<KoaRouter> {
   console.log("localMiddlewareDir: ", localMiddrewareDir)
   let prefix: string = instance.prefix || ''
   let router = new KoaRouter()
@@ -136,7 +136,7 @@ async function routerFromMethods(instance: BaseRouter, methods: MethodsMetas, lo
 
 
 // 解析请求path中的param
-function parseParams(path: string): string[] {
+function parseParams (path: string): string[] {
   let params: string[] = []
   if (!path) {
     return []
@@ -165,7 +165,7 @@ function parseParams(path: string): string[] {
 
 
 // 解析class中的methods信息
-function resolveMethods(classMethodsNodes: Array<ClassMethod>): MethodsMetas { // 
+function resolveMethods (classMethodsNodes: Array<ClassMethod>): MethodsMetas { // 
   let methodsWithDecorators: Array<ClassMethod> = classMethodsNodes.filter((methodNode: any) => true === !!methodNode.decorators)
   // console.log(methodsWithDecorators)
 
@@ -173,7 +173,7 @@ function resolveMethods(classMethodsNodes: Array<ClassMethod>): MethodsMetas { /
 }
 
 // class methods nodes (from babel) => MethodsMetas
-function methodsMetasFromClassMethods(methodsNodes: Array<ClassMethod>): MethodsMetas {
+function methodsMetasFromClassMethods (methodsNodes: Array<ClassMethod>): MethodsMetas {
   let methods: MethodsMetas = methodsNodes.map((methodNode: any) => {
     let methodName: string = methodNode.key.name
 

@@ -5,7 +5,7 @@ import * as path from 'path'
  * @param path 相对于项目根目录下的路径
  */
 export function pathRelativeRoot (_path: string): string {
-  let rootPath: string = path.resolve(__dirname, '../../') 
+  let rootPath: string = path.resolve(__dirname, '../../')
   return path.resolve(rootPath, _path)
 }
 

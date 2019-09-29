@@ -1,5 +1,5 @@
 // 简化代码，去掉注释 和 空格， 和回车
-export function simplifyCode(code: string): string {
+export function simplifyCode (code: string): string {
 
   // remove single line comments and blank lines
   code = removeSingleLineComments(code)
@@ -10,13 +10,13 @@ export function simplifyCode(code: string): string {
   return code
 }
 
-function isSingleLineCommentOrBlankLine(line: string): boolean {
+function isSingleLineCommentOrBlankLine (line: string): boolean {
   let trimedLine = line.trim()
   return !trimedLine || trimedLine.startsWith('\/\/')
 }
 
 
-function removeSingleLineComments(code: string): string {
+function removeSingleLineComments (code: string): string {
   // find //
   let lines = code.split('\n')
   let step = 0
@@ -32,7 +32,7 @@ function removeSingleLineComments(code: string): string {
 
 
 // remove comments link /**/
-function removeMultiLineComments(code: string): string {
+function removeMultiLineComments (code: string): string {
   // find /*
 
   let commentStart = '/*'

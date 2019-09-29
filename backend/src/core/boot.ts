@@ -4,7 +4,7 @@ import { internalMiddlewares } from './middlewares'
 import { resolveRoutes } from './router_resolver'
 
 // init global env, such as application middlewares, etc...
-function globalInit(router: Router) {
+function globalInit (router: Router) {
   return new Promise((resolve, rejects) => {
 
     // init applications middlewares
@@ -30,7 +30,7 @@ function globalInit(router: Router) {
 }
 
 
-function registerRouters(router: Router) {
+function registerRouters (router: Router) {
   let controllers: string[] = controllersFiles()
   controllers.forEach((f: string) => {
     resolveRoutes(f).then(_r => router.use('', _r.routes()))
@@ -38,7 +38,7 @@ function registerRouters(router: Router) {
 }
 
 
-export function boot(rootRouter: Router): Router {
+export function boot (rootRouter: Router): Router {
   globalInit(rootRouter).then((success: boolean) => {
     if (!success) {
       throw new Error('Init Global Env Failed')

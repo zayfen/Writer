@@ -5,12 +5,12 @@ import { resolve } from 'dns'
 import { rejects } from 'assert'
 
 // transform path to absolutepath
-export function absolutePath(path: string): string {
+export function absolutePath (path: string): string {
   return fs.realpathSync(path)
 }
 
 
-export function readLines(path: string) {
+export function readLines (path: string) {
 
   return new Promise((resolve, reject) => {
     let rl = readline.createInterface({
@@ -27,7 +27,7 @@ export function readLines(path: string) {
 }
 
 
-export function existed(path: string): boolean {
+export function existed (path: string): boolean {
   return fs.existsSync(path)
 }
 
@@ -35,7 +35,7 @@ export function existed(path: string): boolean {
 /*
   * read ts file
 */
-export function readFile(tsFile: string): string {
+export function readFile (tsFile: string): string {
   console.log("readFile: " + tsFile)
   tsFile = absolutePath(tsFile)
 
@@ -48,12 +48,12 @@ export function readFile(tsFile: string): string {
 }
 
 
-export function writeFile(filePath: string, content: string) {
+export function writeFile (filePath: string, content: string) {
   return fs.writeFileSync(filePath, content, { flag: 'a' }) // encoding default utf-8
 }
 
 
-export function isDirectory(path: string): boolean {
+export function isDirectory (path: string): boolean {
   if (!fs.existsSync(path)) {
     throw new Error(__filename + " isDirectory: path not existed: " + path)
   }
@@ -64,7 +64,7 @@ export function isDirectory(path: string): boolean {
 /*
   list fiels of directory
 */
-export function listDirectoryFiles(dir: string, level: number = -1): Array<string> {
+export function listDirectoryFiles (dir: string, level: number = -1): Array<string> {
   if (!fs.existsSync(dir)) {
     throw new Error(__filename + " listDirectoryFiles: Directory not existed: " + dir)
   }
@@ -91,7 +91,7 @@ export function listDirectoryFiles(dir: string, level: number = -1): Array<strin
   return files
 }
 
-export function formatDate(d: Date, separator: string = '/') {
+export function formatDate (d: Date, separator: string = '/') {
   let month = '' + (d.getMonth() + 1)
   let day = '' + d.getDate()
   let year = d.getFullYear()
@@ -105,7 +105,7 @@ export function formatDate(d: Date, separator: string = '/') {
 }
 
 // 文件修改的时间
-export function fileModifyDate(path: string): string {
+export function fileModifyDate (path: string): string {
   let date: string = ''
   let stat = fs.statSync(path)
   date = formatDate(stat.mtime)
@@ -114,7 +114,7 @@ export function fileModifyDate(path: string): string {
 
 
 // 删除文件
-export function deleteFile(path: string): Promise<string> {
+export function deleteFile (path: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.unlink(path, (err: NodeJS.ErrnoException) => {
       if (!err) {
