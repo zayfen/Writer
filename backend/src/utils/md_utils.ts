@@ -96,6 +96,15 @@ export function parseHexoMd (mdPath: string): MarkdownMeta {
       if (key === 'title' || key === 'author') {
         info[key] = value
       }
+      if (key === 'tag') {
+        info['tags'] = [value]
+      }
+      if (key === 'category') {
+        info['categories'] = [value]
+      }
+      if (key === 'archive') {  
+        info['archives'] = [value]
+      }
     }
 
   }
