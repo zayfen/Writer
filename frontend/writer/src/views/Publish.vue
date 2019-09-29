@@ -15,7 +15,7 @@
       </el-col>
       <el-col :span="5" style="text-align: left;">
         <el-tag :key="tag" v-for="tag in tags" closable :disable-transitions="false" @close="removeTag">{{tag}}</el-tag>
-        <el-input class="input-new-tag" 
+        <el-input class="input-new-tag"
           ref="refTagInput"
           v-if="tagInputVisible"
           v-model="tagInputValue"
@@ -102,8 +102,8 @@ export default class Publish extends Vue {
         this.id = data.meta._id
         this.title = data.meta.title
         this.$set(this, 'tags', data.meta.tags)
-        this.$set(this, 'categories', data.meta.categories)
-        this.archive = data.meta.archives.join(';')
+        this.$set(this, 'categories', data.meta.categories || [])
+        this.archive = (data.meta.archives || []).join(';')
         this.content = data.content
       } else {
         this.$notify.error("获取文章失败")
@@ -175,7 +175,8 @@ export default class Publish extends Vue {
   public addCategory () {
     this.categoryInputVisible = true
     this.$nextTick(() => {
-      this.$refs.refCategoryInput.$refs.input.focus()
+        this.$refs.refCategoryInput.$refs.input.focus()
+      }
     })
   }
 
@@ -184,7 +185,7 @@ export default class Publish extends Vue {
       this.tags.push(this.tagInputValue)
       this.tagInputValue = ''
     }
-    this.tagInputVisible = false    
+    this.tagInputVisible = false
   }
 
   public handleCategoryInputConfirm () {
