@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 
 
 // 根据不同的环境配置不同的baseUrl
-let AXIOS_BASE_URL = 'http://localhost:8000'
+let AXIOS_BASE_URL = '/'
 
 console.log('当前axios的baseUrl路径', AXIOS_BASE_URL)
 axiosInstance.defaults.baseURL = AXIOS_BASE_URL

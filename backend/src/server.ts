@@ -1,7 +1,11 @@
 import * as Koa from 'koa'
 import * as Router from 'koa-router'
 import * as cors from 'koa2-cors'
+import * as serve from 'koa-static'
+import * as mount from 'koa-mount'
 import { boot } from './core/boot'
+import { createReadStream } from 'fs'
+import * as path from 'path'
 
 const app = new Koa()
 const router = new Router()
@@ -42,6 +46,13 @@ app.use(cors({
 
 app.use(router.routes())
 app.use(router.allowedMethods())
+
+// render view
+const StaticDir: string = path.join(__dirname, '../../frontend/writer/dist/')
+app.use(serve(StaticDir))
+app.use(mount('/login', serve(StaticDir)))
+app.use(mount('/home', serve(StaticDir)))
+app.use(mount('/publish', serve(StaticDir)))
 
 app.on('error', (err, ctx) => {
   console.error("Error: ", err)
