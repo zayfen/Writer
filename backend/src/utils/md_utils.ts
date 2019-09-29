@@ -116,7 +116,7 @@ export function parseHexoMd (mdPath: string): MarkdownMeta {
 export function readHexoFile (mdPath: string): string {
   let content = readFile(mdPath)
 
-  let lines: string[] = content.split('\n').filter((line: string) => line.trim() !== '')
+  let lines: string[] = content.split('\n')
 
   let blockPos: { start: number, end: number } = { start: -1, end: -1 }
   let len = lines.length
@@ -126,10 +126,12 @@ export function readHexoFile (mdPath: string): string {
       break
     }
 
-    let line = lines[index++]
-    if (line.trim().split('').every((ch: string) => ch === '-')) {
+    let line = lines[index]
+    let chars = line.trim().split('')
+    if (chars.length > 0 && chars.every((ch: string) => ch === '-')) {
       blockPos.start === -1 ? blockPos.start = index : (blockPos.end === -1 ? blockPos.end = index : '')
     }
+    index++
   }
 
   content = lines.slice(blockPos.end+1).join('\n')

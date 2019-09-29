@@ -66,7 +66,7 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
-import { getArticleById } from '@/api/article_api'
+import { getArticleById, updateArticle, createArticle } from '@/api/article_api'
 
 @Component({
   components: {
@@ -74,14 +74,14 @@ import { getArticleById } from '@/api/article_api'
   }
 })
 export default class Publish extends Vue {
-  private editType: "creat" | "update" = "creat"
+  private editType: "creat" | "update"
   private tagInputVisible: boolean = false
   private tagInputValue: string = ''
 
   private categoryInputVisible: boolean = false
   private categoryInputValue: string = ''
 
-
+  private id: string
   private title: string = ''
   private tags: string[] = []
   private categories: string[] = []
@@ -91,13 +91,15 @@ export default class Publish extends Vue {
   public beforeCreate () {
     let params = this.$route.params
     if (params.id) {
+      this.id = params.id
       this.editType = 'update'
     }
-    console.log(params)
-    getArticleById(params.id).then(response => {
+    console.log("beforeCreate: ", params, "  ;", this.editType)
+    this.id && getArticleById(params.id).then(response => {
       console.log("getArticleById: ", response)
       if (response.code === 0) {
         let data = response.data
+        this.id = data.meta._id
         this.title = data.meta.title
         this.$set(this, 'tags', data.meta.tags)
         this.$set(this, 'categories', data.meta.categories)
@@ -108,6 +110,47 @@ export default class Publish extends Vue {
       }
     })
 
+
+
+  }
+
+  public updateArticle () {
+    let body = {
+      title: this.title,
+      tags: this.tags,
+      archives: [this.archive],
+      categories: this.categories,
+      content: this.content
+    }
+
+    updateArticle(this.id, body).then(response => {
+      console.log("updateArticle: ", response)
+      if (response.code === 0) {
+        this.$notify.success("更新文章成功，预计2分钟后生效")
+      } else {
+        this.$notify.error("更新文章失败：" + response.message)
+      }
+    })
+  }
+
+  public createArticle () {
+    let body = {
+      title: this.title,
+      tags: this.tags,
+      archives: [this.archive],
+      categories: this.categories,
+      content: this.content
+    }
+    createArticle(body).then(response => {
+      if (response.code === 0) {
+        // 创建文章成功之后，需要变为更新状态
+        this.id = response.data._id
+        this.editType = 'update'
+        this.$notify.success("创建文章成功，预计2分钟后生效")
+      } else {
+        this.$notify.error("创建文章失败")
+      }
+    })
   }
 
   public get MaxTagNum () {
@@ -154,7 +197,12 @@ export default class Publish extends Vue {
 
 
   public onPublishButtonClick () {
-
+    console.log("onPublishButtonClick: ", this.editType)
+    if (this.editType === 'update') {
+      this.updateArticle()
+    } else {
+      this.createArticle()
+    }
   }
 }
 </script>

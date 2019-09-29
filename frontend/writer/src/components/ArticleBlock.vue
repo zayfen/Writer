@@ -53,10 +53,10 @@ export default class ArticleBlock extends Vue {
   @Prop() private title!: string
   @Prop() private author!: string
   @Prop() private publishDate!: string
-  @Prop() private tags!: string[]
+  @Prop({ default: () => [] }) private tags!: string[]
   @Prop() private url!: string
-  @Prop({ default: [] }) private categories!: string[]
-  @Prop({ default: [] }) private archives!: string[]
+  @Prop({ default: () => [] }) private categories!: string[]
+  @Prop({ default: () => [] }) private archives!: string[]
 
   public onEditButtonClick (evt: Event) {
     // console.log("onEditButtonClick")
@@ -71,7 +71,7 @@ export default class ArticleBlock extends Vue {
   }
 
   public onDeleteButtonClick (evt: Event) {
-
+    this.$emit("delete", { id: this.id, title: this.title })
   }
 
 }

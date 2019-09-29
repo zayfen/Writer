@@ -54,7 +54,7 @@ class Index implements BaseRouter {
 
     let article: ArticleMeta = {
       title: body.title,
-      author: userInfo.aliasName,
+      author: user,
       tags: body.tags,
       archives: body.archives,
       categories: body.categories,
@@ -68,6 +68,7 @@ class Index implements BaseRouter {
       let result = await this.articleService.createArticle(article, content)
       ctx.body = { code: 0, message: 'success', data: result }
     } catch (err) {
+      console.error("addArticle Error: ", err)
       ctx.body = { code: -1, message: err || '创建文章失败' }
     }
   }
@@ -77,13 +78,12 @@ class Index implements BaseRouter {
   @POST('/update/:id')
   public async updateArticle (ctx: Koa.Context) {
     let user: string = ctx.session.user
-    let userName: string = ctx.session.userInfo.aliasName
     let id: string = ctx.params.id
     let body: BodyType = ctx.request.body
     console.log("updateArticle: id: ", id, '  ;body: ', ctx.request.body)
 
     let article: ArticleMeta = {
-      author: userName,
+      author: user,
       title: body.title,
       tags: body.tags,
       archives: body.archives,

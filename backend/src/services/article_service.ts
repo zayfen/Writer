@@ -54,11 +54,18 @@ class ArticlService {
 
   public updateArticle(id: string, article: ArticleMeta, content: string): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
     return new Promise((resolve, reject) => {
-      this.db.updateArticle(id, article).then(res => {
-        let realArticlePath: string = path.join(config.hexoRoot, article.path)
-        writeMdFile(realArticlePath, article, content)
-        resolve(res)
-      })
+        this.db.findArticleById(id).then(_article => {
+            _article.title = article.title
+            _article.tags = article.tags
+            _article.archives = article.archives
+            _article.categories = article.categories
+          this.db.updateArticle(id, _article).then(res => {
+            let realArticlePath: string = path.join(config.hexoRoot, _article.path)
+            writeMdFile(realArticlePath, article, content)
+            resolve(res)    
+          })
+        })      
+
     })
   }
 

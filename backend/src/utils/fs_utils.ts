@@ -49,6 +49,10 @@ export function readFile (tsFile: string): string {
 
 
 export function writeFile (filePath: string, content: string) {
+  return fs.writeFileSync(filePath, content, { flag: 'w' }) // encoding default utf-8
+}
+
+export function appendFile (filePath: string, content: string) {
   return fs.writeFileSync(filePath, content, { flag: 'a' }) // encoding default utf-8
 }
 

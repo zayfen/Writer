@@ -13,6 +13,7 @@ export interface ArticleMeta {
 }
 
 const db = new Nedb<ArticleMeta>({ filename: pathRelativeRoot('data/articles.db'), autoload: true })
+db.persistence.setAutocompactionInterval(7 * 24 * 60 * 60 * 1000) // unit: ms， compact every 7 days
 
 export class ArticleDAO {
   private db: Nedb<ArticleMeta> = null
@@ -65,7 +66,7 @@ export class ArticleDAO {
 
   public updateArticle (id: string, article: ArticleMeta): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
     return new Promise((resolve, reject) => {
-      this.db.update({ _id: id }, article, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
+      this.db.update({ _id: id }, {$set: article}, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
         if (err) {
           reject(err)
         } else {

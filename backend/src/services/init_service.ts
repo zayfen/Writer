@@ -31,7 +31,7 @@ class InitService {
     }
     
     if (this.initialized) {
-      console.log("Have Initialized!")
+      console.log("Already Initialized!")
       return 'success'
     }
 

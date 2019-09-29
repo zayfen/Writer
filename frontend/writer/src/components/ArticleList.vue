@@ -21,7 +21,8 @@
                 :tags="article.tags"
                 :categories="article.categories"
                 :archives="article.archives"
-                :url="article.url">
+                :url="article.url"
+                @delete="deleteArticle">
       </article-block>      
     </template>
 
@@ -43,6 +44,10 @@ import ArticleBlock, { ArticleMeta } from './ArticleBlock.vue'
 })
 export default class ArticleList extends Vue {
   @Prop({ default: () => [] }) private articles!: ArticleMeta[];
+
+  public deleteArticle (data) {
+    this.$emit("deleteArticle", data)
+  }
 }
 </script>
 
