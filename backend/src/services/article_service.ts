@@ -1,7 +1,7 @@
 import * as path from 'path'
 import config from '../../config'
 import { ArticleDAO, ArticleMeta } from '../dao/article_dao'
-import { publishDate, mdUriPath, writeMdFile } from '../utils/md_utils'
+import { publishDate, mdUriPath, writeMdFile, readHexoFile } from '../utils/md_utils'
 import { listDirectoryFiles, deleteFile, formatDate, readFile } from '../utils/fs_utils'
 import { md5 } from '../utils/crypt_utils'
 
@@ -27,12 +27,12 @@ class ArticlService {
     return new Promise((resolve, reject) => {
       // generate file path e.g.: /source/_posts/hello-123343242532.md
       let fileName = md5(article.author + article.title + Date.now())
-      article.path = config.postsPath + '/' + fileName + '.md' // e.g.:
+      article.path = path.join(config.postsPath, fileName + '.md') // e.g.:
       article.publishDate = formatDate(new Date(), '/')
-      article.url = [config.hexoHost, article.publishDate, fileName].join('/')
+      article.url = [article.publishDate, fileName].join('/')
 
       console.log("createArticle: ", article)
-      let realFilePath: string = path.resolve(config.hexoRoot, article.path)
+      let realFilePath: string = path.resolve(path.join(config.hexoRoot, article.path))
       this.db.insertArticle(article).then(newDocs => {
         writeMdFile(realFilePath, article, content)
         resolve(newDocs)
@@ -44,8 +44,8 @@ class ArticlService {
   public getArticleById(id: string): Promise<{ meta: ArticleMeta, content: string }> {
     return new Promise((resolve, rejects) => {
       this.db.findArticleById(id).then(doc => {
-        let filePath: string = path.resolve(config.hexoRoot, doc.path)
-        let content: string = readFile(filePath)
+        let filePath: string = path.join(config.hexoRoot, doc.path)
+        let content: string = readHexoFile(filePath)
         resolve({ meta: doc, content: content })
       })
     })
@@ -55,7 +55,7 @@ class ArticlService {
   public updateArticle(id: string, article: ArticleMeta, content: string): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
     return new Promise((resolve, reject) => {
       this.db.updateArticle(id, article).then(res => {
-        let realArticlePath: string = path.resolve(config.hexoRoot, article.path)
+        let realArticlePath: string = path.join(config.hexoRoot, article.path)
         writeMdFile(realArticlePath, article, content)
         resolve(res)
       })
@@ -72,7 +72,7 @@ class ArticlService {
 
       let deletedCount = await this.db.deleteArticle(id)
       if (deletedCount > 0) {
-        let filePath: string = path.resolve(config.hexoRoot, article.path)
+        let filePath: string = path.join(config.hexoRoot, article.path)
         await deleteFile(filePath)
       }
       return true

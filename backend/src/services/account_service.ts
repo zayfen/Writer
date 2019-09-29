@@ -5,7 +5,8 @@ const Account = typeof AccountData === 'string' ? JSON.parse(AccountData) : Acco
 export type UserInfo = {
   passwd: string,
   aliasName: string,
-  email: string
+  email: string,
+  privilege: "admin" | "write" | "read"
 }
 
 export type AccountType = {

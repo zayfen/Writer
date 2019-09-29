@@ -1,7 +1,7 @@
 import { existed, readFile, formatDate, fileModifyDate, writeFile } from './fs_utils'
 import { fileName } from './path_utils'
 import { ArticleMeta } from '../dao/article_dao'
-import { taggedTemplateExpression } from '@babel/types'
+import { taggedTemplateExpression, blockStatement } from '@babel/types'
 
 interface MarkdownMeta {
   title: string,
@@ -104,6 +104,30 @@ export function parseHexoMd (mdPath: string): MarkdownMeta {
 }
 
 
+export function readHexoFile (mdPath: string): string {
+  let content = readFile(mdPath)
+
+  let lines: string[] = content.split('\n').filter((line: string) => line.trim() !== '')
+
+  let blockPos: { start: number, end: number } = { start: -1, end: -1 }
+  let len = lines.length
+  let index = 0
+  while (index < len) {
+    if (blockPos.start > -1 && blockPos.end > -1) {
+      break
+    }
+
+    let line = lines[index++]
+    if (line.trim().split('').every((ch: string) => ch === '-')) {
+      blockPos.start === -1 ? blockPos.start = index : (blockPos.end === -1 ? blockPos.end = index : '')
+    }
+  }
+
+  content = lines.slice(blockPos.end+1).join('\n')
+
+  return content
+}
+
 export async function writeMdFile (path: string, article: ArticleMeta, content: string) {
   let articleContent: string[] = []
   articleContent.push('------')
@@ -127,6 +151,8 @@ export async function writeMdFile (path: string, article: ArticleMeta, content: 
   // push categories
   articleContent.push('categories: ')
   article.categories.forEach(category => articleContent.push(' - ' + category))
+
+  articleContent.push('------')
 
   // push content
   articleContent.push(content)

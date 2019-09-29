@@ -36,7 +36,7 @@ app.use(session(CONFIG, app))
 boot(router)
 
 app.use(cors({
-  origin: 'http://localhost:8081',
+  origin: 'http://localhost:8080',
   credentials: true
 }))
 

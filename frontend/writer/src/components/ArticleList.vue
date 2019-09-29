@@ -14,6 +14,7 @@
 
     <template v-if="articles.length > 0" >
       <article-block v-for="(article, index) in articles" :key="index"
+                :id="article._id"
                 :title="article.title"
                 :author="article.author"
                 :publishDate="article.publishDate"

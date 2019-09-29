@@ -20,7 +20,7 @@ class Account implements BaseRouter {
 
     let userName: string = ctx.request.body.userName
     let passwd: string = ctx.request.body.passwd
-    console.log("account: ", account)
+    console.log("account: ", ctx.request.body)
     
     // ctx.set('Access-Control-Allow-Origin', '*')
     
@@ -34,7 +34,12 @@ class Account implements BaseRouter {
       ctx.session.user = userName
       ctx.session.userInfo = AccountService.getUserInfo(userName)
       ctx.type = 'json'
-      ctx.body = JSON.stringify({ code: 0, message: 'success' })      
+      let userInfo = {
+        aliasName: ctx.session.userInfo.aliasName,
+        email: ctx.session.userInfo.email,
+        privilege: ctx.session.userInfo.privilege
+      }
+      ctx.body = JSON.stringify({ code: 0, message: 'success', data: userInfo })      
     }
   }
 

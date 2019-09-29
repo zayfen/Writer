@@ -37,13 +37,14 @@ class Index implements BaseRouter {
     let articles = await this.articleService.getArticlesByUser(user)
     // change uri field, prepend with hexoHost
     articles.forEach(article => {
-      article.url = normalizePath(config.hexoHost + '/' + article.url)
+      article.url = config.hexoHost + article.url
     })
     console.log("getArticleList Articles: ", articles)
     ctx.body = { code: 0, message: 'success', data: { list: articles } }
   }
 
   // 创建文章
+  @MIDDLEWARE('write')
   @POST('/create')
   public async addArticle (ctx: Koa.Context) {
     let user: string = ctx.session.user
@@ -72,6 +73,7 @@ class Index implements BaseRouter {
   }
 
   // 更新文章
+  @MIDDLEWARE('write')
   @POST('/update/:id')
   public async updateArticle (ctx: Koa.Context) {
     let user: string = ctx.session.user
@@ -103,7 +105,7 @@ class Index implements BaseRouter {
     let id: string = ctx.params.id
     try {
       let article = await this.articleService.getArticleById(id)
-      article.meta.url = normalizePath(config.hexoHost + '/' + article.meta.url)
+      article.meta.url = config.hexoHost + article.meta.url
       console.log("getArticle: ", article)
       ctx.body = { code: 0, message: 'success', data: article }
     } catch (err) {
@@ -111,7 +113,7 @@ class Index implements BaseRouter {
     }
   }
 
-
+  @MIDDLEWARE('admin')
   @POST('/delete/:id')
   public async deleteArticle (ctx: Koa.Context) {
     let id: string = ctx.params.id

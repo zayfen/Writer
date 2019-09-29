@@ -66,6 +66,7 @@
 <script lang="ts">
 import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
+import { getArticleById } from '@/api/article_api'
 
 @Component({
   components: {
@@ -73,6 +74,7 @@ import MarkdownEditor from '@/components/MarkdownEditor.vue'
   }
 })
 export default class Publish extends Vue {
+  private editType: "creat" | "update" = "creat"
   private tagInputVisible: boolean = false
   private tagInputValue: string = ''
 
@@ -86,10 +88,31 @@ export default class Publish extends Vue {
   private archive: string = ''
   private content: string = ''
 
+  public beforeCreate () {
+    let params = this.$route.params
+    if (params.id) {
+      this.editType = 'update'
+    }
+    console.log(params)
+    getArticleById(params.id).then(response => {
+      console.log("getArticleById: ", response)
+      if (response.code === 0) {
+        let data = response.data
+        this.title = data.meta.title
+        this.$set(this, 'tags', data.meta.tags)
+        this.$set(this, 'categories', data.meta.categories)
+        this.archive = data.meta.archives.join(';')
+        this.content = data.content
+      } else {
+        this.$notify.error("获取文章失败")
+      }
+    })
+
+  }
+
   public get MaxTagNum () {
     return 6
   }
-
 
   public removeTag (tag: string) {
     this.tags.splice(this.tags.indexOf(tag), 1)

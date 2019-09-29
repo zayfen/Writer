@@ -36,6 +36,6 @@ export default class MarkdownEditor extends Vue {
     exts: ['chart', 'uml', 'scrollSync', 'table']
   }
 
-  @PropSync('content', { type: String }) private syncedContent!: string = ''
+  @PropSync('content', { type: String }) private syncedContent!: string
 }
 </script>

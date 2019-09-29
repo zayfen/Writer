@@ -49,6 +49,7 @@ export interface ArticleMeta {
 
 @Component
 export default class ArticleBlock extends Vue {
+  @Prop() private id!: string
   @Prop() private title!: string
   @Prop() private author!: string
   @Prop() private publishDate!: string
@@ -59,6 +60,10 @@ export default class ArticleBlock extends Vue {
 
   public onEditButtonClick (evt: Event) {
     // console.log("onEditButtonClick")
+    this.$router.push({
+      name: 'publish',
+      params: { id: this.id }
+    })
   }
 
   public onViewButtonClick (evt: Event) {

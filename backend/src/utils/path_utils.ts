@@ -5,7 +5,7 @@ import * as path from 'path'
  * @param path 相对于项目根目录下的路径
  */
 export function pathRelativeRoot (_path: string): string {
-  let rootPath: string = path.resolve(__dirname, '../../')
+  let rootPath: string = path.join(__dirname, '../../')
   return path.resolve(rootPath, _path)
 }
 
@@ -15,6 +15,9 @@ export function fileName (_path: string): string {
 }
 
 export function cutPath (fullPath: string, partialPath: string): string {
+  fullPath = path.normalize(fullPath)
+  partialPath = path.normalize(partialPath)
   let _path = fullPath.split(partialPath).join('')
-  return _path.charAt(0) === '/' ? _path : '/' + _path
+  let seperator = path.normalize('/')
+  return _path.charAt(0) === seperator ? _path : seperator + _path
 }
