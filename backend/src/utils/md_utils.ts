@@ -148,7 +148,7 @@ export async function writeMdFile (path: string, article: ArticleMeta, content: 
   articleContent.push('author: ' + article.author)
 
   // push date
-  articleContent.push('date: ', article.publishDate || formatDate(new Date(), ':'))
+  articleContent.push('date: ' + article.publishDate || formatDate(new Date(), ':'))
 
   // push tags
   articleContent.push('tags: ')
