@@ -1,9 +1,9 @@
 import { Config } from './config.proto'
 
 const DevConfig: Config = {
-  hexoRoot: 'D:\\\\hexo',
+  hexoRoot: '/home/zayfen/Github/hexo',
   hexoHost: 'https://www.zayfen.com',
-  postsPath: '\\source\\_posts'
+  postsPath: '/source/_posts'
 }
 
 export default DevConfig

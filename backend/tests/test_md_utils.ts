@@ -6,6 +6,6 @@ import { equal } from 'assert'
 
 describe('generateAndDeployHexo', () => {
   it("generateAndDeployHexo", function () {
-    generateAndDeployHexo('D:\\hexo')
+  generateAndDeployHexo('/home/zayfen/Github/hexo')
   })
 })
