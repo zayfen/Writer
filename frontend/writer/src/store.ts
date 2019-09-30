@@ -54,6 +54,7 @@ const store = new Vuex.Store({
         logout().then(response => {
           commit('loginState', false)
           commit('setUserInfo', {})
+          saveSessionStorage('WRITER-STATE', {login: false, userInfo: {}})
           resolve(response.data)
         })
       })
@@ -65,6 +66,8 @@ const store = new Vuex.Store({
           console.log("store.ts alreadyLogin: ", response)
           if (response.data.code === 0) {
             commit('loginState', true)
+            commit('setUserInfo', response.data.data)
+            saveSessionStorage('WRITER-STATE', { login: true, userInfo: response.data.data })
             reslove(response.data)
           } else {
             commit('loginState', false)

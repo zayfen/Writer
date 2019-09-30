@@ -15,10 +15,10 @@
 
       </el-form>
 
-      <el-button 
+      <el-button
         style="border-radius: 0;background: #2c80ff;"
-        type="primary" 
-        @click="onLoginButtonClick">登录</el-button>  
+        type="primary"
+        @click="onLoginButtonClick">登录</el-button>
     </el-card>
   </div>
 </template>
@@ -37,9 +37,9 @@ export default class Login extends Vue {
   form: LoginForm = { userName: '', passwd: '' }
 
   public beforeCreate () {
-    this.$store.dispatch('alreadyLogin').then(res => {
-      this.$router.replace({ name: 'home' })
-    })
+    // this.$store.dispatch('alreadyLogin').then(res => {
+    //   this.$router.replace({ name: 'home' })
+    // })
   }
 
   public onLoginButtonClick () {

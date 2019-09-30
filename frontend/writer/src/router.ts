@@ -45,13 +45,14 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   console.log('router from: ', from, ' ;to: ', to)
   if (to.matched.some(route => route.meta.requiresAuth)) {
-    // // need to login
-    console.log("router.ts loginState: ", store.getters.getLoginState)
-    if (store.getters.getLoginState) {
-      next()
-    } else {
-      next({ name: 'login' })
-    }
+    store.dispatch('alreadyLogin').then((response: {code: number, message: string, data: any}) => {
+      console.log("router.ts loginState: ", store.getters.getLoginState)
+      if (response.code === 0) {
+        next()
+      } else {
+        next({ name: 'login' })
+      }
+    })
   } else {
     next()
   }

@@ -40,7 +40,6 @@ export default class App extends Vue {
 
   public beforeDestroy () {
     console.log('beforeDestroy')
-    saveSessionStorage('WRITER-STATE', this.$store.state)
   }
 
   public handleCommand (command: string) {
