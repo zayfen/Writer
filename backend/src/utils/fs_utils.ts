@@ -109,10 +109,10 @@ export function formatDate (d: Date, separator: string = '/') {
 }
 
 // 文件修改的时间
-export function fileModifyDate (path: string): string {
+export function fileCreationDate (path: string): string {
   let date: string = ''
   let stat = fs.statSync(path)
-  date = formatDate(stat.mtime)
+  date = formatDate(stat.birthtime)
   return date
 }
 

@@ -1,6 +1,6 @@
 import { fileName } from './path_utils'
 import { ArticleMeta } from '../dao/article_dao'
-import { existed, readFile, formatDate, fileModifyDate, writeFile } from './fs_utils'
+import { existed, readFile, formatDate, fileCreationDate, writeFile } from './fs_utils'
 
 interface MarkdownMeta {
   title: string,
@@ -12,7 +12,7 @@ interface MarkdownMeta {
 
 
 export function publishDate (mdPath: string): string {
-  return fileModifyDate(mdPath)
+  return fileCreationDate(mdPath)
 }
 
 
