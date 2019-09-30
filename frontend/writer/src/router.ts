@@ -13,7 +13,8 @@ let router = new Router({
       path: '/',
       name: 'home',
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: '我的文章'
       },
       component: Home
     },
@@ -21,7 +22,8 @@ let router = new Router({
       path: '/publish',
       name: 'publish',
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: '发布文章'
       },
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
@@ -31,6 +33,10 @@ let router = new Router({
     {
       path: '/login',
       name: 'login',
+      meta: {
+        requiresAuth: false,
+        title: '登录'
+      },
       component: () => import('./views/Login.vue')
     }
   ],
@@ -48,6 +54,12 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     next()
+  }
+})
+
+router.afterEach((to, from) => {
+  if (to.meta.title) {
+    document.title = to.meta.title
   }
 })
 

@@ -1,14 +1,14 @@
 <template>
   <div class="article-list">
    <el-card>
-    <el-row style="margin-bottom: 10px;">
-          <el-col :span="2">标题</el-col>
+    <el-row style="margin-bottom: 10px; font-weight: 700; background: #eee; border-bottom: 1px solid #2c80ff;">
+          <el-col :span="5">标题</el-col>
           <el-col :span="2">作者</el-col>
           <el-col :span="2">发布日期</el-col>
           <el-col :span="4">标签</el-col>
           <el-col :span="4">分类</el-col>
-          <el-col :span="4">归档</el-col>
-          <el-col :span="2">操作</el-col>
+          <el-col :span="3">归档</el-col>
+          <el-col :span="3">操作</el-col>
 
     </el-row>
 

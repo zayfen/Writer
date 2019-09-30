@@ -1,6 +1,6 @@
 <template>
-  <div class="publish">
-    <el-row style="margin-bottom: 5px; border: 1px dashed #2c80ff;">
+  <div class="publish" style="overflow: hidden;">
+    <el-row style="margin-bottom: 5px; margin-top: 5px;">
       <!-- 标题 -->
       <el-col :span="1">
         <label>标题：</label>
@@ -56,9 +56,11 @@
       <MarkdownEditor :content.sync="content"></MarkdownEditor>
     </div>
 
-    <el-row style="margin-top: 5px;">
-      <el-col><el-button type="primary" @click="onPublishButtonClick">{{ editType === 'update' ? '更新文章' : '创建文章' }}</el-button></el-col>
-    </el-row>
+    <el-button 
+      style="position: absolute; left: 610px; top:84px; border: none;border-radius: 0;padding: 9px 12px;background: #2c80ff;"
+      type="primary" @click="onPublishButtonClick">
+      {{ editType === 'update' ? '更新文章' : '创建文章' }}
+    </el-button>
   </div>
 </template>
 
@@ -68,6 +70,14 @@ import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import { getArticleById, updateArticle, createArticle } from '@/api/article_api'
 import { Input } from 'element-ui'
+
+type PostBody = {
+  title: string,
+  tags: string[],
+  archives: string[],
+  categories: string[],
+  content: string
+}
 
 @Component({
   components: {
@@ -112,13 +122,54 @@ export default class Publish extends Vue {
     })
   }
 
-  public updateArticle () {
-    let body = {
-      title: this.title,
-      tags: this.tags,
-      archives: [this.archive],
-      categories: this.categories,
+  public getPostBody (): PostBody {
+    let body: PostBody = {
+      title: this.title.trim(),
+      tags: this.tags.filter(s => s.trim() !== ''),
+      archives: this.archive.split(';').filter(s => s.trim() !== ''),
+      categories: this.categories.filter(s => s.trim() !== ''),
       content: this.content
+    }
+
+    return body
+  }
+
+  public validForm (body: PostBody): boolean {
+    let pass: boolean = true
+
+    let error: string[] = []
+    if (body.title.trim() === '') {
+      pass = false
+      error.push('标题')
+    }
+    if (!body.tags || body.tags.length === 0) {
+      pass = false
+      error.push('标签')
+    }
+    if (!body.archives || body.archives.length === 0) {
+      pass = false
+      error.push('归档')
+    }
+    if (body.content.trim() === '') {
+      pass = false
+      error.push('文章内容')
+    }
+
+    if (!pass) {
+      this.$message({
+          showClose: true,
+          message: '如下内容必填：' + error.join('；'),
+          type: 'error'
+      }) 
+    }
+
+    return pass
+  }
+
+  public updateArticle () {
+    let body: PostBody = this.getPostBody()
+    if (!this.validForm(body)) {
+      return -1
     }
 
     updateArticle(this.id, body).then(response => {
@@ -132,13 +183,11 @@ export default class Publish extends Vue {
   }
 
   public createArticle () {
-    let body = {
-      title: this.title,
-      tags: this.tags,
-      archives: [this.archive],
-      categories: this.categories,
-      content: this.content
+    let body: PostBody = this.getPostBody()
+    if (!this.validForm(body)) {
+      return -1
     }
+
     createArticle(body).then(response => {
       if (response.code === 0) {
         // 创建文章成功之后，需要变为更新状态

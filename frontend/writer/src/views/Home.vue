@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" style="margin-top: 20px;">
     <ArticleList :articles="articleList" @deleteArticle="deleteArticle" />
   </div>
 </template>

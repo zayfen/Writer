@@ -2,7 +2,7 @@
   <tui-editor 
     v-model="syncedContent" 
     :options="editorOptions"
-    height="700px" 
+    height="770px" 
     previewStyle="vertical" 
     mode="markdown">
   </tui-editor>

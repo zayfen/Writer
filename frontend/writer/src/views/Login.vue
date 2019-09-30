@@ -10,7 +10,7 @@
       <el-form-item
         label="密码"
         prop="passwd">
-        <el-input v-model="form.passwd"></el-input>
+        <el-input v-model="form.passwd" type="password" show-password></el-input>
       </el-form-item>
 
     </el-form>
@@ -39,6 +39,7 @@ export default class Login extends Vue {
   }
 
   public onLoginButtonClick () {
+
     this.$store.dispatch('login', this.form).then(res => {
       if (res.code === 0) {
         this.$router.replace({ name: 'home' })
@@ -57,7 +58,7 @@ export default class Login extends Vue {
     display: block;
     width: 30%;
     height: 30%;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
   }

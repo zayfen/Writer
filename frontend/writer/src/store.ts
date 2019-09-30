@@ -7,7 +7,12 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     login: false,
-    version: 0
+    version: 0,
+    userInfo: {
+      aliasName: '张云峰',
+      email: 'zhangyunfeng0101@gmail.com',
+      privilege: 'admin'
+    }
   },
   getters: {
     getLoginState (state) {
@@ -30,6 +35,9 @@ const store = new Vuex.Store({
     
     loginState (state, payload) {
       state.login = payload
+    },
+    setUserInfo (state, payload) {
+      state.userInfo = payload
     }
   },
 
@@ -40,6 +48,7 @@ const store = new Vuex.Store({
         login(payload.userName, payload.passwd).then(response => {
           if (response.data.code === 0) {
             commit('loginState', true)
+            commit('setUserInfo', response.data.data)
             resolve(response.data)
           }
         })
@@ -50,6 +59,7 @@ const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         logout().then(response => {
           commit('loginState', false)
+          commit('setUserInfo', {})
           resolve(response.data)
         })
       })
@@ -70,15 +80,5 @@ const store = new Vuex.Store({
     }
   }
 })
-
-// Subscribe to store updates
-// store.subscribe((mutation, state) => {
-//   // Store the state object as a JSON string
-//   let store = {
-//     version: state.version,
-//     login: state.login
-//   }
-// 	localStorage.setItem('store', JSON.stringify(store))
-// })
 
 export default store

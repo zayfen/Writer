@@ -1,29 +1,38 @@
 <template>
   <el-card class="article-block" shadow="hover">
     <el-row>
-      <el-col :span="2">{{title}}</el-col>
+      <el-col :span="5">{{title}}</el-col>
       <el-col :span="2">{{author}}</el-col>
       <el-col :span="2">{{publishDate}}</el-col>
       
       <el-col :span="4">
-        <el-tag v-for="(tag, index) in tags" :key="index"> 
-          {{tag}} 
-        </el-tag>
+        <template v-if="tags && tags.length > 0">
+          <el-tag v-for="(tag, index) in tags" :key="index"> 
+            {{tag}} 
+          </el-tag>          
+        </template>
+        <span v-else>N/A</span>
       </el-col>
       
       <el-col :span="4">
-        <el-tag v-for="(category, index) in categories" :key="index">
-          {{ category }}
-        </el-tag>
+        <template v-if="categories && categories.length > 0">
+          <el-tag v-for="(category, index) in categories" :key="index">
+            {{ category }}
+          </el-tag>          
+        </template>
+        <span v-else>N/A</span>
       </el-col>
 
-      <el-col :span="4">
-        <el-tag v-for="(archive, index) in archives" :key="index">
-          {{ archive }}
-        </el-tag>
+      <el-col :span="3">
+        <template v-if="archives && archives.length > 0">
+          <el-tag v-for="(archive, index) in archives" :key="index">
+            {{ archive }}
+          </el-tag>
+        </template>
+        <span v-else>N/A</span>
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span="3">
         <el-button-group>
           <el-button type="primary" icon="el-icon-view" @click="onViewButtonClick"></el-button>
           <el-button type="primary" icon="el-icon-edit"  @click="onEditButtonClick"></el-button>
@@ -82,10 +91,29 @@ export default class ArticleBlock extends Vue {
 <style lang="less" scoped>
   .article-block {
     margin-top: 10px;
+    text-align: center;
 
     /deep/ .el-card__body {
-      padding: 5px;
-      line-height: 39.8px;
+      padding: 0px;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    /deep/ .el-row {
+      padding: 0;
+      height: 32px;
+      line-height: 32px;
+      font-size: 14px;
+    }
+
+    /deep/ .el-col {
+      padding: 0;
+      height: 32px;
+      line-height: 32px;
+    }
+
+    /deep/ .el-button {
+      padding: 5px 20px;
     }
   }
 </style>
