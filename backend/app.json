@@ -5,7 +5,7 @@
     "cwd": ".",
     "instances" : "1",
     "exec_mode": "cluster",
-    "watch": ["src"],
+    "watch": ["src", "data/account.json"],
     "error_file": "./logs/zweb-error.log",
     "out_file": "./logs/zweb-out.log",
     "env": {

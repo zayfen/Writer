@@ -3,7 +3,7 @@
  */
 import * as Koa from 'koa'
 import 'koa-body'
-import { GET, POST, MIDDLEWARE } from '../../core/decorators'
+import { POST } from '../../core/decorators'
 import { BaseRouter, MiddleWare } from '../../core/types'
 import AccountService from '../../services/account_service'
 
