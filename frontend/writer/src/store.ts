@@ -6,12 +6,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    login: true,
+    login: false,
     version: 0,
     userInfo: {
-      aliasName: '张云峰',
+      aliasName: 'Unknown',
       email: 'zhangyunfeng0101@gmail.com',
-      privilege: 'admin'
+      privilege: 'read'
     }
   },
   getters: {
@@ -23,7 +23,7 @@ const store = new Vuex.Store({
   mutations: {
     initialiseStore(state) {
       // Check if the ID exists
-      let storeDataStr: string | null = localStorage.getItem('store')      
+      let storeDataStr: string | null = localStorage.getItem('store')
       // Replace the state object with the stored item
       if (storeDataStr) {
         let storeData: { version: number, login: boolean } = JSON.parse(storeDataStr)
@@ -32,7 +32,7 @@ const store = new Vuex.Store({
         }
       }
     },
-    
+
     loginState (state, payload) {
       state.login = payload
     },
