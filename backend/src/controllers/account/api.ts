@@ -49,7 +49,12 @@ class Account implements BaseRouter {
     let alreadyLogin: true = (ctx.session && ctx.session.user)
     if (alreadyLogin) {
       console.log("/api/account/alreadyLogin: ", alreadyLogin)
-      ctx.body = { code: 0, message: '已经登录' }
+      let userInfo = {
+        aliasName: ctx.session.userInfo.aliasName,
+        email: ctx.session.userInfo.email,
+        privilege: ctx.session.userInfo.privilege
+      }
+      ctx.body = { code: 0, message: '已经登录', data: userInfo }
     } else {
       ctx.body = { code: -1, message: '未登录或登录已失效' }
     }
