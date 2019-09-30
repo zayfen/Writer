@@ -19,40 +19,39 @@ export default class Home extends Vue {
   articleList: ArticleMeta[] = [];
 
   public created() {
-    this.fetchArticlesList()
+    this.fetchArticlesList();
   }
 
-  public fetchArticlesList () {
-        getArticlesList().then(response => {
+  public fetchArticlesList() {
+    getArticlesList().then(response => {
       if (response.code === 0) {
-        this.articleList.splice(0, this.articleList.length)
-        response.data.list.forEach(article => {
-          this.articleList.push(article)
+        this.articleList.splice(0, this.articleList.length);
+        response.data.list.forEach((article: ArticleMeta) => {
+          this.articleList.push(article);
         });
       } else {
-        this.$notify.warning("拉取文章列表失败，请稍后再试")
+        this.$notify.warning("拉取文章列表失败，请稍后再试");
       }
     });
   }
 
-  public deleteArticle(data) {
-    let id: string = data.id
-    let title: string = data.title
+  public deleteArticle(data: { id: string; title: string }) {
+    let id: string = data.id;
+    let title: string = data.title;
     this.$confirm(`确定删除(${title})文章吗？`, "删除", {
-        distinguishCancelAndClose: false,
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      }
-    ).then(() => {
+      distinguishCancelAndClose: false,
+      confirmButtonText: "确定",
+      cancelButtonText: "取消"
+    }).then(() => {
       deleteArticle(id).then(response => {
         if (response.code === 0) {
-          this.$notify.success(`${title}已删除！`)
-          this.fetchArticlesList()
+          this.$notify.success(`${title}已删除！`);
+          this.fetchArticlesList();
         } else {
-          this.$notify.error('删除失败：' + response.message)
+          this.$notify.error("删除失败：" + response.message);
         }
-      })
-    })
+      });
+    });
   }
 }
 </script>
