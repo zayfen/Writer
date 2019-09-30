@@ -14,10 +14,5 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
-  render: h => h(App),
-  beforeCreate () {
-    let state = loadSessionStorage('WRITER-STATE')
-    console.log("beforeCreate")
-    this.$store.dispatch('loadInitState', state)
-  }
+  render: h => h(App)
 }).$mount('#app')

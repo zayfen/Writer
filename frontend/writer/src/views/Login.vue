@@ -36,12 +36,6 @@ export default class Login extends Vue {
 
   form: LoginForm = { userName: '', passwd: '' }
 
-  public beforeCreate () {
-    // this.$store.dispatch('alreadyLogin').then(res => {
-    //   this.$router.replace({ name: 'home' })
-    // })
-  }
-
   public onLoginButtonClick () {
 
     this.$store.dispatch('login', this.form).then(res => {
