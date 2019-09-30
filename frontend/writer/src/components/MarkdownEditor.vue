@@ -2,7 +2,7 @@
   <tui-editor 
     v-model="syncedContent" 
     :options="editorOptions"
-    height="750px" 
+    height="830px"
     previewStyle="vertical" 
     mode="markdown">
   </tui-editor>
@@ -39,3 +39,12 @@ export default class MarkdownEditor extends Vue {
   @PropSync('content', { type: String }) private syncedContent!: string
 }
 </script>
+
+
+<style lang="less">
+  .te-md-container .CodeMirror,
+  .tui-editor-contents {
+      font-size: 16px !important;
+      font-family: Consolas, Courier, "Apple SD 산돌고딕 Neo", -apple-system, "Lucida Grande", "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Segoe UI", dotum, sans-serif;
+    }
+</style>
