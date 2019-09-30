@@ -9,4 +9,4 @@ const ProductionConfig: Config = {
   './node_modules/.bin/hexo algolia']
 }
 
-export default ProductionConfig
+export default ProductionConfig 
