@@ -89,27 +89,29 @@ export default class ArticleBlock extends Vue {
 
 
 <style lang="less" scoped>
+  @height: 40px;
   .article-block {
     margin-top: 10px;
     text-align: center;
+    border: none;
 
     /deep/ .el-card__body {
       padding: 0px;
-      height: 32px;
-      line-height: 32px;
+      height: @height;
+      line-height: @height;
     }
 
     /deep/ .el-row {
       padding: 0;
-      height: 32px;
-      line-height: 32px;
+      height: @height;
+      line-height: @height;
       font-size: 14px;
     }
 
     /deep/ .el-col {
       padding: 0;
-      height: 32px;
-      line-height: 32px;
+      height: @height;
+      line-height: @height;
     }
 
     /deep/ .el-button {

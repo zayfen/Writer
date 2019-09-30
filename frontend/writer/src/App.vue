@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav" v-if="this.$store.state.login">
       <el-container>
-        <el-header style="text-align: right; font-size: 12px; padding: 0 200px 0 200px;">
+        <el-header style="text-align: right; font-size: 14px;font-weight: 700; padding: 0 200px 0 200px; color: #000;">
 
           <el-row>
             <el-col :span="12" style="text-align: left">
@@ -90,7 +90,7 @@ body {
   padding: 0;
   background: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 0 1.25rem #9da5ab;
+  box-shadow: 0 0 2px #9da5ab;
 
   a {
     font-weight: bold;
@@ -108,13 +108,12 @@ body {
     line-height: 40px;
 
     text-align: center;
-    background: #eee;
     text-decoration: none;
     color: #3e3e3e;
 
     &:hover {
       color: #2c80ff;
-      background: #ccc;
+      background: #eee;
     }
   }
 }

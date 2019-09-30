@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    login: false,
+    login: true,
     version: 0,
     userInfo: {
       aliasName: '张云峰',

@@ -1,5 +1,5 @@
 <template>
-  <div class="publish" style="overflow: hidden;">
+  <div class="publish" style="overflow: hidden; margin-top: 20px;">
     <el-row style="margin-bottom: 5px; margin-top: 5px;">
       <!-- 标题 -->
       <el-col :span="1">
@@ -57,7 +57,7 @@
     </div>
 
     <el-button 
-      style="position: absolute; left: 610px; top:84px; border: none;border-radius: 0;padding: 9px 12px;background: #2c80ff;"
+      style="position: absolute; left: 610px; top:104px; border: none;border-radius: 0;padding: 9px 12px;background: #2c80ff;"
       type="primary" @click="onPublishButtonClick">
       {{ editType === 'update' ? '更新文章' : '创建文章' }}
     </el-button>

@@ -19,6 +19,7 @@ export default class Home extends Vue {
   articleList: ArticleMeta[] = [];
 
   public created() {
+    
     this.fetchArticlesList();
   }
 
