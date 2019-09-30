@@ -176,9 +176,12 @@ export async function writeMdFile (path: string, article: ArticleMeta, content: 
 export function generateAndDeployHexo (hexoRoot: string): void {
   const GenerateCmd: string = './node_modules/.bin/hexo generate'
   const DeployCmd: string = './node_modules/.bin/hexo deploy'
-  runCmd(GenerateCmd, hexoRoot).then(event => {
-    runCmd(DeployCmd, hexoRoot).then(event => {
-      console.log('generateAndDeployHexo Finished')
+  const AlgoliaCmd: string = './node_modules/.bin/hexo algolia'
+  runCmd(GenerateCmd, hexoRoot, true).then(event => {
+    runCmd(DeployCmd, hexoRoot, true).then(event => {
+      runCmd(AlgoliaCmd, hexoRoot, true).then(event => {
+        console.log("============ GenerateAndDeployHexo DONE ===============")
+      })
     })
   })
 }
