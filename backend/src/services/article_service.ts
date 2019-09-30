@@ -1,9 +1,14 @@
 import * as path from 'path'
 import config from '../../config'
 import { ArticleDAO, ArticleMeta } from '../dao/article_dao'
-import { publishDate, mdUriPath, writeMdFile, readHexoFile, generateAndDeployHexo } from '../utils/md_utils'
+import { publishDate, mdUriPath, writeMdFile, readHexoFile } from '../utils/md_utils'
 import { listDirectoryFiles, deleteFile, formatDate, readFile } from '../utils/fs_utils'
+import { runCommands } from '../utils/process_utils'
 import { md5 } from '../utils/crypt_utils'
+
+function generateAndDeployHexo (hexoRoot: string) {
+  runCommands(hexoRoot, config.cmdsOnUpdateInHexoRoot)
+}
 
 /**
  * 业务层
