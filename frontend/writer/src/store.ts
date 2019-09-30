@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { login, logout, alreadyLogin } from './api/account_api'
+import { saveSessionStorage } from '@/utils/storage_utils'
 
 Vue.use(Vuex)
 
@@ -41,6 +42,7 @@ const store = new Vuex.Store({
           if (response.data.code === 0) {
             commit('loginState', true)
             commit('setUserInfo', response.data.data)
+            saveSessionStorage('WRITER-STATE', { login: true, userInfo: response.data.data })
             resolve(response.data)
           }
         })
