@@ -42,7 +42,7 @@ export default DevConfig
 ```
 
 ### 三、配置账户
-账户配置在Writer/data/accounts.json文件中。
+账户配置在Writer/data/account.json文件中。
 
 账号分为3中权限，**admin**权限用户可以看到所有的文章，并且可以更新，删除他人文章，新建自己的文章；**writer** 权限用户，只能查看到自己的文章，可以新增，更新，删除自己的文章；
 **read** 权限用户，只能查看自己的文章，任何文章修改动作都被禁止。
