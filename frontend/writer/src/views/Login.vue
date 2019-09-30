@@ -1,21 +1,25 @@
 <template>
   <div class="login-page">
-    <el-form v-model="form">
-      <el-form-item
-        label="用户名"
-        prop="userName">
-        <el-input v-model="form.userName"></el-input>
-      </el-form-item>
+    <el-card>
+      <h2 style="font-weight: 700; color: #2c80ff; margin-bottom: 20px;">登录</h2>
+      <el-form v-model="form">
+        <el-form-item
+          prop="userName">
+          <el-input placeholder="用户名" v-model="form.userName"></el-input>
+        </el-form-item>
 
-      <el-form-item
-        label="密码"
-        prop="passwd">
-        <el-input v-model="form.passwd" type="password" show-password></el-input>
-      </el-form-item>
+        <el-form-item
+          prop="passwd">
+          <el-input placeholder="密码" v-model="form.passwd" type="password" show-password></el-input>
+        </el-form-item>
 
-    </el-form>
+      </el-form>
 
-    <el-button type="primary" @click="onLoginButtonClick">登录</el-button>
+      <el-button 
+        style="border-radius: 0;background: #2c80ff;"
+        type="primary" 
+        @click="onLoginButtonClick">登录</el-button>  
+    </el-card>
   </div>
 </template>
 
