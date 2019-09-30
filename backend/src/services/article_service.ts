@@ -27,6 +27,12 @@ class ArticlService {
     })
   }
 
+  public getAllArticles (): Promise<ArticleMeta[]> {
+    return new Promise((resolve, reject) => {
+      this.db.findAllArticles().then(articles => resolve(articles))
+    })
+  }
+
   // create new article
   public createArticle(article: ArticleMeta, content: string): Promise<ArticleMeta> {
     return new Promise((resolve, reject) => {

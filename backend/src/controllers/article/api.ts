@@ -34,7 +34,12 @@ class Index implements BaseRouter {
   public async getArticleList (ctx: Koa.Context) {
     let user: string = ctx.session.user
     console.log("getArticleList: ", user)
-    let articles = await this.articleService.getArticlesByUser(user)
+    let articles = []
+    if (ctx.session.userInfo.privilege === 'admin') { // admin can get all articles
+      articles = await this.articleService.getAllArticles()
+    } else {
+      articles = await this.articleService.getArticlesByUser(user)
+    }
     // change uri field, prepend with hexoHost
     articles.forEach(article => {
       article.url = config.hexoHost + article.url

@@ -40,7 +40,19 @@ export class ArticleDAO {
 
   public findArticleByAuthor (author: string): Promise<Array<ArticleMeta>> {
     return new Promise((resolve, reject) => {
-      this.db.find({ author: author }, (err: Error, docs: Array<ArticleMeta>) => {
+      this.db.find({ author: author }).sort({ publishDate: 1}).exec((err: Error, docs: Array<ArticleMeta>) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(docs)
+        }
+      })
+    })
+  }
+
+  public findAllArticles (): Promise<Array<ArticleMeta>> {
+    return new Promise((resolve, reject) => {
+      this.db.find({ }).sort({ publishDate: 1}).exec((err: Error, docs: Array<ArticleMeta>) => {
         if (err) {
           reject(err)
         } else {

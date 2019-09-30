@@ -14,6 +14,15 @@ export type AccountType = {
 }
 
 
+function dynGetAccountData () {
+  return new Promise((resolve, reject) => {
+    import('../../data/account.json').then(data => {
+      let accountData = typeof data === 'string' ? JSON.parse(data) : data
+      resolve(data)
+    })    
+  })
+}
+
 class AccountService {
   public static validAccount (userName: string, passwd: string): boolean {
     return Account[userName] && Account[userName].passwd === passwd
