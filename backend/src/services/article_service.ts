@@ -6,7 +6,7 @@ import { listDirectoryFiles, deleteFile, formatDate, readFile } from '../utils/f
 import { runCommands } from '../utils/process_utils'
 import { md5 } from '../utils/crypt_utils'
 
-function generateAndDeployHexo (hexoRoot: string) {
+export function generateAndDeployHexo (hexoRoot: string) {
   runCommands(hexoRoot, config.cmdsOnUpdateInHexoRoot)
 }
 

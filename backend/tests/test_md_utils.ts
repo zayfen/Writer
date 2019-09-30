@@ -1,11 +1,12 @@
 import 'mocha'
 import { assert } from 'chai'
-import { generateAndDeployHexo } from '../src/utils/md_utils'
 import { equal } from 'assert'
+import { generateAndDeployHexo } from '../src/services/article_service'
+import config from '../config/index'
 
 
 describe('generateAndDeployHexo', () => {
   it("generateAndDeployHexo", function () {
-    generateAndDeployHexo('D:\\hexo')
+    generateAndDeployHexo(config.hexoRoot)
   })
 })
