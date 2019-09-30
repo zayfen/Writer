@@ -7,7 +7,7 @@
           <el-row>
             <el-col :span="12" style="text-align: left">
               <router-link class="router-link" to="/">我的文章</router-link>
-              <router-link class="router-link" to="/publish">发布新文章</router-link>              
+              <router-link class="router-link" to="/publish">发布新文章</router-link>
             </el-col>
             <el-col :span="12">
               <el-dropdown @command="handleCommand">

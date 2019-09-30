@@ -7,7 +7,6 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     login: false,
-    version: 0,
     userInfo: {
       aliasName: 'Unknown',
       email: 'zhangyunfeng0101@gmail.com',
@@ -21,16 +20,9 @@ const store = new Vuex.Store({
     }
   },
   mutations: {
-    initialiseStore(state) {
-      // Check if the ID exists
-      let storeDataStr: string | null = localStorage.getItem('store')
-      // Replace the state object with the stored item
-      if (storeDataStr) {
-        let storeData: { version: number, login: boolean } = JSON.parse(storeDataStr)
-        if (storeData.version !== state.version) {
-          this.replaceState(Object.assign(state, storeData))
-        }
-      }
+    loadInitState (state, payload: { login: boolean, userInfo: any }) {
+      state.login = payload.login
+      state.userInfo = payload.userInfo
     },
 
     loginState (state, payload) {
