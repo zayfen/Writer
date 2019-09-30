@@ -21,7 +21,7 @@ const store = new Vuex.Store({
   },
   mutations: {
     loadInitState (state, payload: { login: boolean, userInfo: any }) {
-      state.login = payload.login
+      state.login = !!payload.login
       state.userInfo = payload.userInfo
     },
 

@@ -15,11 +15,13 @@ new Vue({
   router,
   store,
   render: h => h(App),
-  created () {
+  beforeCreate () {
     let state = loadSessionStorage('WRITER-STATE')
+    console.log("beforeCreate")
     this.$store.dispatch('loadInitState', state)
   },
   beforeDestroy () {
+    console.log('beforeDestroy')
     saveSessionStorage('WRITER-STATE', this.$store.state)
   }
 }).$mount('#app')
