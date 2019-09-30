@@ -30,10 +30,17 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { logout } from '@/api/account_api'
+import { saveSessionStorage } from '@/utils/storage_utils'
 @Component
 export default class App extends Vue {
 
   public created() {
+  }
+
+
+  public beforeDestroy () {
+    console.log('beforeDestroy')
+    saveSessionStorage('WRITER-STATE', this.$store.state)
   }
 
   public handleCommand (command: string) {
