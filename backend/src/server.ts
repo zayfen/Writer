@@ -4,7 +4,6 @@ import * as cors from 'koa2-cors'
 import * as serve from 'koa-static'
 import * as mount from 'koa-mount'
 import { boot } from './core/boot'
-import { createReadStream } from 'fs'
 import * as path from 'path'
 
 const app = new Koa()

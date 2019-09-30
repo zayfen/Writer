@@ -1,7 +1,8 @@
-import { existed, readFile, formatDate, fileModifyDate, writeFile } from './fs_utils'
 import { fileName } from './path_utils'
 import { ArticleMeta } from '../dao/article_dao'
-import { taggedTemplateExpression, blockStatement } from '@babel/types'
+import { existed, readFile, formatDate, fileModifyDate, writeFile } from './fs_utils'
+import { spawn } from 'child_process'
+import { stdout, stderr } from 'process'
 
 interface MarkdownMeta {
   title: string,
@@ -169,4 +170,38 @@ export async function writeMdFile (path: string, article: ArticleMeta, content: 
   articleContent.push(content)
 
   writeFile(path, articleContent.join('\n'))
+}
+
+
+export function generateAndDeployHexo (hexoRoot: string): void {
+  const GenerateCmd: string = './node_modules/.bin/hexo generate'
+  const DeployCmd: string = './node_modules/.bin/hexo deploy'
+  runCmd(GenerateCmd, hexoRoot).then(event => {
+    runCmd(DeployCmd, hexoRoot).then(event => {
+      console.log('generateAndDeployHexo Finished')
+    })
+  })
+}
+
+function runCmd (cmd: string, cwd: string, detach: boolean = false): Promise<string> {
+  let cmdArr: string[] = cmd.split(' ')
+  let _cmd: string = cmdArr[0]
+  let args: string[] = cmdArr.slice(1) || []
+  return new Promise((resolve, reject) => {
+
+    let process = null
+    if (detach) {
+      process = spawn(_cmd, args, { detached: true, cwd: cwd, stdio: ['ignore', 'ignore', 'ignore'] })
+      process.unref()
+    } else {
+      process = spawn(_cmd, args, { cwd: cwd })
+      process.stdout.on("data", chunk => console.log(chunk.toString('ascii')))
+      process.stderr.on('data', chunk => console.error(chunk.toString('ascii')))      
+    }
+
+    process.on('close', code => {
+      console.log(`RunCmd: ${cmd} Finished!`)
+      resolve('finish')
+    })
+  })
 }

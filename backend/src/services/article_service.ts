@@ -1,7 +1,7 @@
 import * as path from 'path'
 import config from '../../config'
 import { ArticleDAO, ArticleMeta } from '../dao/article_dao'
-import { publishDate, mdUriPath, writeMdFile, readHexoFile } from '../utils/md_utils'
+import { publishDate, mdUriPath, writeMdFile, readHexoFile, generateAndDeployHexo } from '../utils/md_utils'
 import { listDirectoryFiles, deleteFile, formatDate, readFile } from '../utils/fs_utils'
 import { md5 } from '../utils/crypt_utils'
 
@@ -35,6 +35,7 @@ class ArticlService {
       let realFilePath: string = path.resolve(path.join(config.hexoRoot, article.path))
       this.db.insertArticle(article).then(newDocs => {
         writeMdFile(realFilePath, article, content)
+        generateAndDeployHexo(config.hexoRoot)
         resolve(newDocs)
       })
     })
@@ -62,6 +63,7 @@ class ArticlService {
           this.db.updateArticle(id, _article).then(res => {
             let realArticlePath: string = path.join(config.hexoRoot, _article.path)
             writeMdFile(realArticlePath, article, content)
+            generateAndDeployHexo(config.hexoRoot)
             resolve(res)    
           })
         })      
@@ -81,6 +83,7 @@ class ArticlService {
       if (deletedCount > 0) {
         let filePath: string = path.join(config.hexoRoot, article.path)
         await deleteFile(filePath)
+        generateAndDeployHexo(config.hexoRoot)
       }
       return true
 
