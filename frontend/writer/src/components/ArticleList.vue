@@ -45,7 +45,7 @@ import ArticleBlock, { ArticleMeta } from './ArticleBlock.vue'
 export default class ArticleList extends Vue {
   @Prop({ default: () => [] }) private articles!: ArticleMeta[];
 
-  public deleteArticle (data) {
+  public deleteArticle (data: { [key: string]: any }) {
     this.$emit("deleteArticle", data)
   }
 }

@@ -62,7 +62,8 @@ export default class ArticleBlock extends Vue {
     // console.log("onEditButtonClick")
     this.$router.push({
       name: 'publish',
-      params: { id: this.id }
+      params: { id: this.id },
+      query: { id: this.id }
     })
   }
 

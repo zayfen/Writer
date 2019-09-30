@@ -57,7 +57,7 @@
     </div>
 
     <el-row style="margin-top: 5px;">
-      <el-col><el-button type="primary" @click="onPublishButtonClick">发布</el-button></el-col>
+      <el-col><el-button type="primary" @click="onPublishButtonClick">{{ editType === 'update' ? '更新文章' : '创建文章' }}</el-button></el-col>
     </el-row>
   </div>
 </template>
@@ -67,6 +67,7 @@
 import { Component, Prop, PropSync, Vue } from 'vue-property-decorator'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import { getArticleById, updateArticle, createArticle } from '@/api/article_api'
+import { Input } from 'element-ui'
 
 @Component({
   components: {
@@ -74,28 +75,28 @@ import { getArticleById, updateArticle, createArticle } from '@/api/article_api'
   }
 })
 export default class Publish extends Vue {
-  private editType: "creat" | "update"
+  private editType: "create" | "update" = 'create'
   private tagInputVisible: boolean = false
   private tagInputValue: string = ''
 
   private categoryInputVisible: boolean = false
   private categoryInputValue: string = ''
 
-  private id: string
+  private id: string = ''
   private title: string = ''
   private tags: string[] = []
   private categories: string[] = []
   private archive: string = ''
   private content: string = ''
 
-  public beforeCreate () {
-    let params = this.$route.params
-    if (params.id) {
-      this.id = params.id
+  public created () {
+    let query = this.$route.query
+    if (query.id) {
+      this.id = query.id as string
       this.editType = 'update'
     }
-    console.log("beforeCreate: ", params, "  ;", this.editType)
-    this.id && getArticleById(params.id).then(response => {
+    console.log("beforeCreate: ", query, "  ;", this.editType)
+    this.id && getArticleById(this.id).then(response => {
       console.log("getArticleById: ", response)
       if (response.code === 0) {
         let data = response.data
@@ -109,9 +110,6 @@ export default class Publish extends Vue {
         this.$notify.error("获取文章失败")
       }
     })
-
-
-
   }
 
   public updateArticle () {
@@ -164,7 +162,8 @@ export default class Publish extends Vue {
   public addTag () {
     this.tagInputVisible = true
     this.$nextTick(() => {
-      this.$refs.refTagInput.$refs.input.focus()
+      let refTagInput = (this.$refs.refTagInput as Vue).$refs.input as Input
+      refTagInput.focus()
     })
   }
 
@@ -175,7 +174,8 @@ export default class Publish extends Vue {
   public addCategory () {
     this.categoryInputVisible = true
     this.$nextTick(() => {
-        this.$refs.refCategoryInput.$refs.input.focus()
+      let refCategoryInput = (this.$refs.refCategoryInput as Vue).$refs.input as Input
+      refCategoryInput.focus()
     })
   }
 
