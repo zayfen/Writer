@@ -9,7 +9,6 @@ import ArticleService from '../../services/article_service'
 import { ArticleMeta } from '../../dao/article_dao'
 import { UserInfo } from '../../services/account_service'
 import config from '../../../config'
-import { normalizePath } from '../../utils/uri_utils'
 
 type BodyType = {
   title: string,
