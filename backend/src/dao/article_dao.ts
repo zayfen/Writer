@@ -22,12 +22,9 @@ export class ArticleDAO {
       this.db = db
     }
   }
-  
-  db.remove({}, { multi: true }, function (err, numRemoved) {
 
-});
-  
-  public clearCollection (): Promise<{numRemoved: number}> {
+
+  public clearCollection (): Promise<{ numRemoved: number }> {
     return new Promise((resolve, reject) => {
       this.db.remove({}, { multi: true }, function (err, numRemoved) {
         if (err) {
@@ -36,7 +33,9 @@ export class ArticleDAO {
           resolve({ numRemoved: numRemoved })
         }
       })
+    })
   }
+
 
   public insertArticle (article: ArticleMeta): Promise<ArticleMeta> {
     return new Promise((resolve, reject) => {
@@ -54,7 +53,7 @@ export class ArticleDAO {
 
   public findArticleByAuthor (author: string): Promise<Array<ArticleMeta>> {
     return new Promise((resolve, reject) => {
-      this.db.find({ author: author }).sort({ publishDate: 1}).exec((err: Error, docs: Array<ArticleMeta>) => {
+      this.db.find({ author: author }).sort({ publishDate: 1 }).exec((err: Error, docs: Array<ArticleMeta>) => {
         if (err) {
           reject(err)
         } else {
@@ -66,7 +65,7 @@ export class ArticleDAO {
 
   public findAllArticles (): Promise<Array<ArticleMeta>> {
     return new Promise((resolve, reject) => {
-      this.db.find({ }).sort({ publishDate: 1}).exec((err: Error, docs: Array<ArticleMeta>) => {
+      this.db.find({}).sort({ publishDate: 1 }).exec((err: Error, docs: Array<ArticleMeta>) => {
         if (err) {
           reject(err)
         } else {
@@ -92,7 +91,7 @@ export class ArticleDAO {
 
   public updateArticle (id: string, article: ArticleMeta): Promise<{ numberOfUpdated: Number, upsert: boolean }> {
     return new Promise((resolve, reject) => {
-      this.db.update({ _id: id }, {$set: article}, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
+      this.db.update({ _id: id }, { $set: article }, {}, (err: Error, numberOfUpdated: Number, upsert: boolean) => {
         if (err) {
           reject(err)
         } else {

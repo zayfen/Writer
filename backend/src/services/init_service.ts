@@ -36,6 +36,7 @@ class InitService {
     }
 
     try {
+      await this.db.clearCollection()
       let result = await this.initArticlesDb()
       console.log('initArticlesDb Success: ', result)
       this.initialized = true
@@ -47,7 +48,7 @@ class InitService {
   }
 
   /* 初始化articles database */
-  public initArticlesDb () {
+  public async initArticlesDb () {
     let absPostsDirPath = path.normalize(config.hexoRoot + config.postsPath)
     console.log("initArticleDb absPostsDirPath: ", absPostsDirPath, " hexoRoot: ", config.hexoRoot, " ;postsPath: ", config.postsPath)
     let files: string[] = listDirectoryFiles(absPostsDirPath)
@@ -65,7 +66,6 @@ class InitService {
       }
 
       return this.db.insertArticle(article)
-
     })
   }
 
