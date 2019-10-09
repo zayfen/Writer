@@ -59,15 +59,16 @@ const store = new Vuex.Store({
     },
 
     alreadyLogin ({ commit }) {
-      return new Promise((reslove, reject) => {
+      return new Promise((resolve, reject) => {
         alreadyLogin().then(response => {
           console.log("store.ts alreadyLogin: ", response)
           if (response.data.code === 0) {
             commit('loginState', true)
             commit('setUserInfo', response.data.data)
-            reslove(response.data)
+            resolve(response.data)
           } else {
             commit('loginState', false)
+            resolve(response.data)
           }
         })
       })
