@@ -22,7 +22,21 @@ export class ArticleDAO {
       this.db = db
     }
   }
+  
+  db.remove({}, { multi: true }, function (err, numRemoved) {
 
+});
+  
+  public clearCollection (): Promise<{numRemoved: number}> {
+    return new Promise((resolve, reject) => {
+      this.db.remove({}, { multi: true }, function (err, numRemoved) {
+        if (err) {
+          reject(err)
+        } else {
+          resolve({ numRemoved: numRemoved })
+        }
+      })
+  }
 
   public insertArticle (article: ArticleMeta): Promise<ArticleMeta> {
     return new Promise((resolve, reject) => {
