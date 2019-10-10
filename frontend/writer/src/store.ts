@@ -42,8 +42,8 @@ const store = new Vuex.Store({
           if (response.data.code === 0) {
             commit('loginState', true)
             commit('setUserInfo', response.data.data)
-            resolve(response.data)
           }
+          resolve(response.data)
         })
       })
     },
