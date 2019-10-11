@@ -40,7 +40,7 @@ class ArticlService {
       let fileName = md5(article.author + article.title + Date.now())
       article.path = path.join(config.postsPath, fileName + '.md') // e.g.:
       article.publishDate = formatDate(new Date(), '/')
-      article.url = [article.publishDate, fileName].join('/')
+      article.url = ['', article.publishDate, fileName].join('/')
 
       console.log("createArticle: ", article)
       let realFilePath: string = path.resolve(path.join(config.hexoRoot, article.path))

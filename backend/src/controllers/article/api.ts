@@ -41,6 +41,9 @@ class Index implements BaseRouter {
     }
     // change uri field, prepend with hexoHost
     articles.forEach(article => {
+      if (article.url.charAt(0) !== '/') {
+        article.url = '/' + article.url
+      }
       article.url = config.hexoHost + article.url
     })
     console.log("getArticleList Articles: ", articles)
