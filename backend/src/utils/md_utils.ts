@@ -162,6 +162,11 @@ export async function writeMdFile (path: string, article: ArticleMeta, content: 
   articleContent.push('categories: ')
   article.categories.forEach(category => articleContent.push(' - ' + category))
 
+  // check if contains mathjax symbols
+  if (/\$.+?\$/g.test(content)) {
+    articleContent.push('mathjax: true')
+  }
+
   articleContent.push('------')
 
   // push content

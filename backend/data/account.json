@@ -1,20 +1,8 @@
 {
   "zayfen": {
-    "passwd": "12345678",
+    "passwd": "zyf515815",
     "aliasName": "张云峰",
     "email": "zhangyunfeng0101@gmail.com",
     "privilege": "admin"
-  },
-  "writer1": {
-    "passwd": "12345678",
-    "aliasName": "writer1",
-    "email": "zhangyunfeng0101@gmail.com",
-    "privilege": "write"
-  },
-  "reader1": {
-    "passwd": "12345678",
-    "aliasName": "reader1",
-    "email": "zhangyunfeng0101@gmail.com",
-    "privilege": "read"
   }
 }

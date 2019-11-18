@@ -6,8 +6,9 @@
     "instances" : "1",
     "exec_mode": "cluster",
     "watch": ["src", "data/account.json"],
-    "error_file": "./logs/zweb-error.log",
-    "out_file": "./logs/zweb-out.log",
+    "error_file": "./logs/writer-error.log",
+    "out_file": "./logs/writer-out.log",
+    "log_date_format" : "YYYY-MM-DD HH:mm Z",
     "env": {
       "NODE_ENV": "development",
       "PORT": 8080 
