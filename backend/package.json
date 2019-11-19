@@ -4,30 +4,30 @@
   "private": true,
   "scripts": {
     "local-dev": "ts-node src/server.ts",
-    "dev": "pm2 start app.json",
-    "start": "pm2 start app.json --env production",
+    "dev": "./node_modules/.bin/pm2 start app.json",
+    "start": "./node_modules/.bin/pm2 start app.json --env production",
     "pm2-reload": "pm2 reload zweb",
     "pm2-list": "pm2 list",
     "pm2-stop": "pm2 stop zweb",
     "test": "mocha -r ts-node/register tests/**/*.ts"
   },
   "devDependencies": {
-    "@babel/parser": "^7.6.2",
-    "@types/chai": "^4.2.3",
+    "@babel/parser": "^7.7.3",
+    "@types/chai": "^4.2.5",
     "@types/koa-mount": "^4.0.0",
     "@types/koa-static": "^4.0.1",
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
-    "mocha": "^6.2.1"
+    "mocha": "^6.2.2"
   },
   "dependencies": {
-    "@babel/types": "^7.6.1",
-    "@types/koa": "^2.0.50",
+    "@babel/types": "^7.7.2",
+    "@types/koa": "^2.0.52",
     "@types/koa-router": "^7.0.42",
     "@types/koa-session": "^5.10.1",
     "@types/koa2-cors": "^2.0.1",
     "@types/nedb": "^1.8.9",
-    "koa": "^2.8.2",
+    "koa": "^2.11.0",
     "koa-body": "^4.1.1",
     "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
@@ -35,10 +35,10 @@
     "koa-static": "^5.0.0",
     "koa2-cors": "^2.0.6",
     "nedb": "^1.8.0",
-    "nodemon": "^1.19.3",
+    "nodemon": "^1.19.4",
     "pm2": "^3.5.1",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.3",
+    "ts-node": "^8.5.2",
+    "typescript": "^3.7.2",
     "typescript-require": "^0.2.10"
   }
 }
