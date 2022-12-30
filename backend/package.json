@@ -18,7 +18,7 @@
     "@types/koa-static": "^4.0.1",
     "@types/mocha": "^5.2.7",
     "chai": "^4.2.0",
-    "mocha": "^6.2.2"
+    "mocha": "^10.2.0"
   },
   "dependencies": {
     "@babel/types": "^7.7.2",
